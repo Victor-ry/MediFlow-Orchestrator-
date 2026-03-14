@@ -1,10 +1,10 @@
 .sidebar {
     width: 200px;
-    background-color: #ffffff;
+    background-color: #f8fafc;
     display: flex;
     flex-direction: column;
     padding: 1.5rem 1rem;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid #dbe1ea;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
     z-index: 10;
 }
