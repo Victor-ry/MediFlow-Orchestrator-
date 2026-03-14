@@ -7,6 +7,8 @@ import ConsultationQueuePage from './pages/ConsultationQueuePage';
 import PatientIntakeTranscriptPage from './pages/PatientIntakeTranscriptPage';
 import AIAnalysisPage from './pages/AIAnalysisPage';
 import DepartmentQueuePage from './pages/DepartmentQueuePage';
+import CheckRoutePage from './pages/CheckRoutePage';
+import CheckPatientRoutePage from './pages/CheckPatientRoutePage';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/orchestrator/transcript" element={<PatientIntakeTranscriptPage />} />
         <Route path="/orchestrator/ai-analysis" element={<AIAnalysisPage />} />
         <Route path="/services" element={<ServicesPage />} />
+        <Route path="/checkRoute" element={<CheckRoutePage />} />
+        <Route path="/checkRoute/:id" element={<CheckPatientRoutePage />} />
       </Routes>
     </Router>
   );

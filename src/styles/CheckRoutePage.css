@@ -1,0 +1,58 @@
+.check-route-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e2e4e6;
+    font-family: Arial, sans-serif;
+    color: black;
+}
+
+.check-route-page .container {
+    display: flex;
+}
+
+.check-route-page .card {
+    width: 350px;
+    padding: 30px;
+    background: #f5f1f1;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.check-route-page .field {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.check-route-page .field input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.check-route-page button {
+    width: 100%;
+    padding: 12px;
+    background: #2b7cff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.check-route-page button:hover {
+    background: #1f5fd1;
+}
+
+.check-route-page .error-message {
+    background: #ffe5e5;
+    color: #b30000;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}

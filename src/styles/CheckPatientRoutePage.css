@@ -1,0 +1,145 @@
+.checkPatientRoutePage {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f4f6f8;
+    min-height: 100vh;
+    color: #222;
+}
+
+.checkPatientRoutePage h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #2b7cff;
+}
+
+.checkPatientRoutePage .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.checkPatientRoutePage .order-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.checkPatientRoutePage .order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.checkPatientRoutePage .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.checkPatientRoutePage .order-id {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.checkPatientRoutePage .priority {
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.checkPatientRoutePage .priority-high {
+    background-color: #b30000;
+}
+.checkPatientRoutePage .priority-medium {
+    background-color: #ff9900;
+}
+.checkPatientRoutePage .priority-low {
+    background-color: #007700;
+}
+
+.checkPatientRoutePage .order-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.checkPatientRoutePage .order-row {
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.checkPatientRoutePage .order-services .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* .checkPatientRoutePage .service-tag {
+    background: #eef4ff;
+    color: #2b7cff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+} */
+
+.checkPatientRoutePage .status {
+    font-weight: bold;
+}
+
+.checkPatientRoutePage .status-pending {
+    color: #2c7aff;
+}
+.checkPatientRoutePage .status-complete {
+    color: #007700;
+}
+.checkPatientRoutePage .status-waiting {
+    color: #ef8d05;
+}
+
+.checkPatientRoutePage .no-orders,
+.checkPatientRoutePage .loading {
+    text-align: center;
+    margin-top: 50px;
+    font-style: italic;
+    color: #555;
+}
+
+.checkPatientRoutePage .patient-info {
+    max-width: 850px;
+    margin: 0 auto 20px;
+    padding: 20px;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.checkPatientRoutePage .patient-info h2 {
+    margin-bottom: 10px;
+    color: #2b7cff;
+}
+
+.checkPatientRoutePage .patient-info p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+.checkPatientRoutePage-loading,
+.checkPatientRoutePage-no-orders {
+    height: 100lvh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
