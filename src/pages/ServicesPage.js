@@ -139,7 +139,7 @@ const ServicesPage = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-container">
+      <div className="dashboard-container services-page">
         <Side />
         <div className="main-content">
           <div className="loading-state">Loading...</div>
@@ -149,7 +149,7 @@ const ServicesPage = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container services-page">
       <Side />
 
       <div className="main-content">

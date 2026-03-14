@@ -74,7 +74,7 @@ export default function DepartmentQueuePage() {
   };
 
   return (
-    <div className="page-container">
+    <div className="page-container department-queue-page">
       <Side />
       <div className="main-content">
         <div className="page-header">

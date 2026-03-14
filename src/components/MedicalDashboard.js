@@ -112,7 +112,7 @@ const MedicalDashboard = () => {
     };
 
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container dashboard-page">
             <Side onTriggerAlert={fetchPatients} />
             <div className="main-content">
                 <header className="header">
