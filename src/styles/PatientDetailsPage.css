@@ -1,0 +1,114 @@
+/* Patient Details Page Styles */
+.patient-details-container {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  padding: 1rem;
+}
+
+.patient-details-wrapper {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.patient-details-header {
+  background-color: #ffffff;
+  border-radius: 1rem 1rem 0 0;
+  border: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.patient-details-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.patient-details-header-logo span {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.patient-details-header-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.patient-details-content {
+  background-color: #ffffff;
+  border-radius: 0 0 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.patient-details-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #1e293b;
+  margin-bottom: 2rem;
+}
+
+.patient-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.patient-details-table td {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.patient-details-table td:first-child {
+  background-color: #dbeafe;
+  font-weight: 600;
+  color: #1e293b;
+  width: 8rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.patient-details-table tr:nth-child(even) {
+  background-color: #f0f4ff;
+}
+
+.patient-details-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.patient-details-btn {
+  padding: 0.5rem 2rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid;
+  font-size: 1rem;
+}
+
+.patient-details-btn-cancel {
+  border-color: #cbd5e1;
+  color: #64748b;
+  background-color: transparent;
+}
+
+.patient-details-btn-cancel:hover {
+  background-color: #f1f5f9;
+}
+
+.patient-details-btn-confirm {
+  border-color: #3b82f6;
+  background-color: #f0f4ff;
+  color: #2563eb;
+}
+
+.patient-details-btn-confirm:hover {
+  background-color: #dbeafe;
+}

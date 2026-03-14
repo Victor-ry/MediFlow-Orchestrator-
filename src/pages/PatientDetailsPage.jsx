@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Activity } from 'lucide-react';
+import '../styles/PatientDetailsPage.css';
 
 export default function PatientDetailsPage() {
   const navigate = useNavigate();
@@ -25,50 +26,44 @@ export default function PatientDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="patient-details-container">
+      <div className="patient-details-wrapper">
         {/* Header */}
-        <div className="bg-white rounded-t-2xl border border-slate-200 px-6 py-4 flex items-center gap-3 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Activity size={24} className="text-slate-700" />
-            <span className="font-bold text-slate-800">MEDIFLOW</span>
+        <div className="patient-details-header">
+          <div className="patient-details-header-logo">
+            <Activity size={24} color="#475569" />
+            <span>MEDIFLOW</span>
           </div>
-          <span className="text-sm text-slate-500">ORCHESTRATOR</span>
+          <span className="patient-details-header-label">ORCHESTRATOR</span>
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-b-2xl border border-t-0 border-slate-200 p-8 shadow-sm">
-          <h2 className="text-2xl font-light text-slate-800 mb-8">Patient #{patientCode}</h2>
+        <div className="patient-details-content">
+          <h2 className="patient-details-title">Patient #{patientCode}</h2>
 
           {/* Table */}
-          <div className="overflow-x-auto mb-8">
-            <table className="w-full">
-              <tbody>
-                {patientData.map((row, idx) => (
-                  <tr key={idx} className={idx % 2 === 0 ? 'bg-blue-50' : ''}>
-                    <td className="px-4 py-4 font-medium text-slate-700 bg-blue-100 w-32 text-center text-sm border border-slate-200">
-                      {row.label}
-                    </td>
-                    <td className="px-4 py-4 text-slate-600 border border-slate-200">
-                      {row.value}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <table className="patient-details-table">
+            <tbody>
+              {patientData.map((row, idx) => (
+                <tr key={idx}>
+                  <td>{row.label}</td>
+                  <td>{row.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
           {/* Buttons */}
-          <div className="flex gap-4 justify-center">
+          <div className="patient-details-buttons">
             <button
               onClick={handleCancel}
-              className="px-8 py-2 border-2 border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors"
+              className="patient-details-btn patient-details-btn-cancel"
             >
               CANCEL
             </button>
             <button
               onClick={handleConfirm}
-              className="px-8 py-2 border-2 border-blue-500 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors"
+              className="patient-details-btn patient-details-btn-confirm"
             >
               CONFIRM
             </button>

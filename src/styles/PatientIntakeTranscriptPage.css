@@ -1,0 +1,137 @@
+/* Patient Intake Transcript Page Styles */
+.transcript-container {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  padding: 1rem;
+}
+
+.transcript-wrapper {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.transcript-header {
+  background-color: #ffffff;
+  border-radius: 1rem 1rem 0 0;
+  border: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.transcript-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transcript-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.transcript-header-logo span {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.transcript-header-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.transcript-header-profile {
+  padding: 0.5rem 1rem;
+  border: 2px solid #3b82f6;
+  color: #2563eb;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.transcript-header-profile:hover {
+  background-color: #f0f4ff;
+}
+
+.transcript-content {
+  background-color: #ffffff;
+  border-radius: 0 0 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.transcript-titles {
+  margin-bottom: 1.5rem;
+}
+
+.transcript-main-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.transcript-subtitle {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.transcript-user-info {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.transcript-user-info span {
+  margin-right: 0.75rem;
+  font-weight: 500;
+}
+
+.transcript-textarea {
+  width: 100%;
+  height: 16rem;
+  padding: 1rem;
+  border: 2px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #64748b;
+  line-height: 1.5;
+  resize: none;
+}
+
+.transcript-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #ffffff;
+}
+
+.transcript-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.transcript-btn {
+  padding: 0.75rem 3rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1rem;
+}
+
+.transcript-btn:hover {
+  background-color: #d1d5db;
+}
