@@ -59,7 +59,7 @@ const MedicalDashboard = () => {
                     </button>
                     <button
                         className="nav-item"
-                        onClick={() => navigate('/orchestrator')}
+                        onClick={() => navigate('/orchestrator/patient-code')}
                     >
                         <Layers size={20} />
                         <span>Orchestrator</span>
