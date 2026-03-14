@@ -55,9 +55,6 @@ export default function PatientIntakeTranscriptPage() {
             </div>
             <span className="transcript-header-label">ORCHESTRATOR</span>
           </div>
-          <button className="transcript-header-profile">
-            Profile
-          </button>
         </div>
 
         {/* Content */}
@@ -124,7 +121,7 @@ export default function PatientIntakeTranscriptPage() {
           <div className="transcript-buttons">
             <button
               onClick={handleProcessRoute}
-              className="transcript-btn"
+              className={`transcript-btn ${transcript.trim() ? 'transcript-btn-active' : ''}`}
             >
               Process & Route
             </button>
