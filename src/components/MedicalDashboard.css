@@ -176,17 +176,63 @@ body {
     background-color: var(--status-low);
 }
 
-/* Sankey Placeholder */
-.dashboard-page .sankey-diagram-box {
-    height: 100%;
-    min-height: 150px;
+/* AI Insights Box */
+.dashboard-page .ai-insights {
+    grid-column: 2 / 4;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-page .ai-insight-box {
+    flex: 1;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.dashboard-page .ai-insight-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    line-height: 1.6;
+}
+
+.dashboard-page .ai-insight-list li {
+    margin-bottom: 0.75rem;
+}
+
+.dashboard-page .ai-insight-list li strong {
+    color: var(--text-primary);
+}
+
+.dashboard-page .primary-action-button {
+    align-self: flex-start;
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: 2px dashed var(--border-color);
+    gap: 0.5rem;
+    background-color: var(--accent-cyan);
+    color: white;
+    border: none;
     border-radius: 0.5rem;
-    color: var(--text-secondary);
-    font-style: italic;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2);
+    transition: all 0.2s ease;
+}
+
+.dashboard-page .primary-action-button:hover {
+    background-color: #0284c7;
+    box-shadow: 0 6px 8px rgba(14, 165, 233, 0.3);
+    transform: translateY(-1px);
+}
+
+.dashboard-page .primary-action-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
 }
 
 /* Metric Cards */
@@ -234,7 +280,7 @@ body {
 
     .dashboard-page .department-load,
     .dashboard-page .line-chart-container,
-    .dashboard-page .sankey-placeholder,
+    .dashboard-page .ai-insights,
     .dashboard-page .metrics-grid {
         grid-column: auto;
     }

@@ -163,11 +163,18 @@ const MedicalDashboard = () => {
                         </table>
                     </div>
 
-                    <div className="grid-item sankey-placeholder">
-                        <h3>Mediflow Routing Flow</h3>
-                        <div className="sankey-diagram-box">
-                            <span>Sankey Diagram Placeholder</span>
+                    <div className="grid-item ai-insights">
+                        <h3>AI Clinical Insights - Qwen AI</h3>
+                        <div className="ai-insight-box">
+                            <ul className="ai-insight-list">
+                                <li><strong>Elevated incidence</strong> of respiratory symptoms noted in Sector B patients.</li>
+                                <li><strong>Preliminary transcript analysis</strong> suggests potential cluster of influenza-like illness.</li>
+                                <li><strong>Immediate specialist review</strong> and further diagnostics recommended for affected cases.</li>
+                            </ul>
                         </div>
+                        <button className="primary-action-button">
+                            🤖 Generate AI Insights
+                        </button>
                     </div>
 
                     <div className="grid-item line-chart-container">
