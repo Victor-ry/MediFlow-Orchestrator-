@@ -56,17 +56,17 @@
 }
 
 /* Progress Tracker */
-.progress-tracker {
+.ai-analysis-content .progress-tracker {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: -0.5rem 0 1rem 0;
+  margin: 0 0 1rem 0;
   padding-bottom: 1.5rem;
   border-bottom: 2px solid #e2e8f0;
   flex-wrap: wrap;
 }
 
-.progress-step {
+.ai-analysis-content .progress-step {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -82,7 +82,7 @@
   min-height: 36px;
 }
 
-.progress-number {
+.ai-analysis-content .progress-number {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,82 +95,78 @@
   color: #475569;
 }
 
-.progress-label {
+.ai-analysis-content .progress-label {
   white-space: nowrap;
 }
 
 /* Progress Step States */
-.progress-step.progress-completed {
+.ai-analysis-content .progress-step.progress-completed {
   border-color: #10b981;
   background-color: #f0fdf4;
   color: #166534;
 }
 
-.progress-step.progress-completed .progress-number {
+.ai-analysis-content .progress-step.progress-completed .progress-number {
   background-color: #10b981;
   color: white;
   font-size: 0.875rem;
 }
 
-.progress-step.progress-completed:hover {
+.ai-analysis-content .progress-step.progress-completed:hover {
   background-color: #dcfce7;
   border-color: #10b981;
 }
 
-.progress-step.progress-current {
+.ai-analysis-content .progress-step.progress-current {
   border-color: #0284c7;
   background-color: #f0f9ff;
   color: #0369a1;
   cursor: not-allowed;
 }
 
-.progress-step.progress-current .progress-number {
+.ai-analysis-content .progress-step.progress-current .progress-number {
   background-color: #0284c7;
   color: white;
   font-weight: 700;
 }
 
 /* Progress Connector */
-.progress-connector {
+.ai-analysis-content .progress-connector {
   width: 40px;
   height: 2px;
   background-color: #cbd5e1;
   margin: 0 -8px;
 }
 
-.progress-connector.progress-completed {
+.ai-analysis-content .progress-connector.progress-completed {
   background-color: #10b981;
 }
 
-.progress-connector.progress-current {
+.ai-analysis-content .progress-connector.progress-current {
   background-color: #cbd5e1;
 }
 
 /* Responsive Progress Tracker */
 @media (max-width: 768px) {
-  .page-layout {
-    flex-direction: column;
-  }
-
-  .progress-tracker {
+  .ai-analysis-content .progress-tracker {
     gap: 0.25rem;
     justify-content: center;
   }
 
-  .progress-step {
+  .ai-analysis-content .progress-step {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
   }
 
-  .progress-connector {
+  .ai-analysis-content .progress-connector {
     width: 24px;
   }
 
-  .progress-label {
+  .ai-analysis-content .progress-label {
     display: none;
   }
 
-  .progress-number {
+  .ai-analysis-content .progress-number {
     width: 28px;
     height: 28px;
   }
