@@ -174,14 +174,14 @@ const MedicalDashboard = () => {
                         <h3>Disease Outbreak Monitor</h3>
                         <ResponsiveContainer width="100%" height={250}>
                             <LineChart data={diseaseData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                <XAxis dataKey="name" stroke="#9ca3af" />
-                                <YAxis stroke="#9ca3af" />
-                                <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151' }} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                <XAxis dataKey="name" stroke="#64748b" />
+                                <YAxis stroke="#64748b" />
+                                <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '0.375rem', color: '#0f172a' }} />
                                 <Legend />
-                                <Line type="monotone" dataKey="influenza" stroke="#38bdf8" strokeWidth={2} activeDot={{ r: 8 }} />
-                                <Line type="monotone" dataKey="covid19" stroke="#f87171" strokeWidth={2} />
-                                <Line type="monotone" dataKey="rsv" stroke="#4ade80" strokeWidth={2} />
+                                <Line type="monotone" dataKey="influenza" stroke="#0284c7" strokeWidth={2} activeDot={{ r: 8 }} />
+                                <Line type="monotone" dataKey="covid19" stroke="#ef4444" strokeWidth={2} />
+                                <Line type="monotone" dataKey="rsv" stroke="#10b981" strokeWidth={2} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>

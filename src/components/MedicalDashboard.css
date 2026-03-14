@@ -1,19 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-    --bg-deep-navy: #0f172a;
-    --bg-card: rgba(30, 41, 59, 0.5);
-    --border-color: rgba(55, 65, 81, 0.6);
-    --text-primary: #e2e8f0;
-    --text-secondary: #94a3b8;
-    --accent-cyan: #38bdf8;
-    --status-high: #f87171;
-    --status-medium: #fbbf24;
-    --status-low: #4ade80;
+    --bg-main: #f1f5f9;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --accent-blue: #0284c7;
+    --status-high: #ef4444;
+    --status-medium: #f59e0b;
+    --status-low: #10b981;
 }
 
 body {
-    background-color: var(--bg-deep-navy);
+    background-color: var(--bg-main);
     color: var(--text-primary);
     font-family: "Inter", sans-serif;
     margin: 0;
@@ -23,6 +23,7 @@ body {
     display: flex;
     height: 100vh;
     width: 100%;
+    background-color: var(--bg-main);
     overflow: hidden;
 }
 
@@ -31,6 +32,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-main);
     overflow-y: auto;
     overflow-x: hidden;
     padding: 1.25rem clamp(1rem, 2vw, 1.75rem);
@@ -89,9 +91,8 @@ body {
     background-color: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
-    padding: 1rem;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     min-width: 0;
 }
 
@@ -149,7 +150,7 @@ body {
 .dashboard-page .status-bar-container {
     width: 100%;
     height: 8px;
-    background-color: #374151;
+    background-color: #e2e8f0;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -189,17 +190,27 @@ body {
 
 /* Metric Cards */
 .dashboard-page .metric-card {
-    background-color: rgba(55, 65, 81, 0.3);
+    background-color: var(--bg-main);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-page .metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .dashboard-page .metric-card-icon {
-    color: var(--accent-cyan);
+    color: var(--accent-blue);
+    background: #e0f2fe;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    display: flex;
 }
 
 .dashboard-page .metric-card-title {
