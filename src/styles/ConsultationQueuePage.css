@@ -1,0 +1,172 @@
+/* Consultation Queue Page Styles */
+.consultation-queue-container {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  padding: 1rem;
+}
+
+.consultation-queue-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.consultation-queue-header {
+  background-color: #ffffff;
+  border-radius: 1rem 1rem 0 0;
+  border: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.consultation-queue-header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.consultation-queue-header-logo span {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.consultation-queue-header-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-left: 0.5rem;
+}
+
+.search-button {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border: 2px solid #cbd5e1;
+  background-color: transparent;
+  color: #64748b;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-button:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.consultation-queue-content {
+  background-color: #ffffff;
+  border-radius: 0 0 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.consultation-queue-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #1e293b;
+  margin: 0 0 1.5rem 0;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.consultation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.consultation-table thead {
+  background-color: #dbeafe;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.consultation-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #1e293b;
+  border-right: 1px solid #cbd5e1;
+}
+
+.consultation-table th:last-child {
+  border-right: none;
+}
+
+.consultation-table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.consultation-table tbody tr:hover {
+  background-color: #f0f9ff;
+}
+
+.consultation-table-row {
+  display: table-row;
+}
+
+.consultation-table td {
+  padding: 0.75rem 1rem;
+  color: #64748b;
+  border-right: 1px solid #e2e8f0;
+}
+
+.consultation-table td:last-child {
+  border-right: none;
+}
+
+.consultation-table tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.consultation-table tbody tr:nth-child(even):hover {
+  background-color: #f0f9ff;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pagination-button {
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #64748b;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #1e293b;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}

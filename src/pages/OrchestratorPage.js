@@ -51,10 +51,10 @@ const OrchestratorPage = () => {
             <h3>Workflow Orchestration Management</h3>
             <p>This page will contain workflow orchestration tools and management interface.</p>
             <button
-              onClick={() => navigate('/orchestrator/patient-code')}
+              onClick={() => navigate('/orchestrator/consultation-queue')}
               className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Start Patient Workflow
+              View Patient Queue
             </button>
           </div>
         </div>

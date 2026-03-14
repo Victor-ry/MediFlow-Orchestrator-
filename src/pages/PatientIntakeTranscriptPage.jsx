@@ -9,10 +9,19 @@ export default function PatientIntakeTranscriptPage() {
   );
   const navigate = useNavigate();
   const location = useLocation();
-  const patientCode = location.state?.patientCode || 'PT-0000';
+  const patient = location.state?.patient || {
+    patient_id: 'P00000',
+    name: 'Unknown Patient',
+    age: '-',
+    sex: '-',
+    allergies: '-',
+    medical_history: '-',
+    family_history: '-'
+  };
 
   const handleProcessRoute = () => {
-    console.log('Processing transcript:', transcript);
+    console.log('Processing transcript for patient:', patient.patient_id);
+    console.log('Transcript:', transcript);
     navigate('/');
   };
 
@@ -40,10 +49,28 @@ export default function PatientIntakeTranscriptPage() {
             <p className="transcript-subtitle">Input Clinical Transcript (Write/Voice):</p>
           </div>
 
-          {/* User Info */}
-          <div className="transcript-user-info">
-            <span>UID: 001</span>
-            <span>User:Alex</span>
+          {/* Patient Info */}
+          <div className="patient-info-section">
+            <div className="patient-info-item">
+              <span className="patient-info-label">Patient ID:</span>
+              <span className="patient-info-value">{patient.patient_id}</span>
+            </div>
+            <div className="patient-info-item">
+              <span className="patient-info-label">Name:</span>
+              <span className="patient-info-value">{patient.name}</span>
+            </div>
+            <div className="patient-info-item">
+              <span className="patient-info-label">Age:</span>
+              <span className="patient-info-value">{patient.age}</span>
+            </div>
+            <div className="patient-info-item">
+              <span className="patient-info-label">Sex:</span>
+              <span className="patient-info-value">{patient.sex}</span>
+            </div>
+            <div className="patient-info-item">
+              <span className="patient-info-label">Allergies:</span>
+              <span className="patient-info-value">{patient.allergies}</span>
+            </div>
           </div>
 
           {/* Transcript Textarea */}

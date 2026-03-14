@@ -84,14 +84,35 @@
   margin: 0;
 }
 
-.transcript-user-info {
+/* Patient Info Section */
+.patient-info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
   margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  color: #64748b;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
 }
 
-.transcript-user-info span {
-  margin-right: 0.75rem;
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.patient-info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-info-value {
+  font-size: 0.95rem;
+  color: #1e293b;
   font-weight: 500;
 }
 
@@ -106,6 +127,7 @@
   color: #64748b;
   line-height: 1.5;
   resize: none;
+  margin-bottom: 1.5rem;
 }
 
 .transcript-textarea:focus {
@@ -117,7 +139,6 @@
 .transcript-buttons {
   display: flex;
   justify-content: flex-end;
-  margin-top: 2rem;
 }
 
 .transcript-btn {
