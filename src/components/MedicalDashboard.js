@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Home, Layers, BarChart2, Bell, X, HeartPulse, Bot, ShieldCheck, CircleDollarSign } from 'lucide-react';
+import { useState } from 'react';
+import { X, HeartPulse, Bot, ShieldCheck, CircleDollarSign } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './MedicalDashboard.css';
 import { getPatients } from '../utils/supabase';
+import Side from './Sidebar';
 
 const departmentData = [
     { name: 'Radiology', status: 'High', waitTime: '45min' },
@@ -35,7 +35,6 @@ const MetricCard = ({ icon, title, value, unit }) => (
 
 const MedicalDashboard = () => {
     const [showAlert, setShowAlert] = useState(false);
-    const navigate = useNavigate();
 
     const getStatusClass = (status) => {
         if (status === 'High') return 'status-high';
@@ -54,7 +53,8 @@ const MedicalDashboard = () => {
 
     return (
         <div className="dashboard-container">
-            <aside className="sidebar">
+            <Side onTriggerAlert={fetchPatients} />
+            {/* <aside className="sidebar">
                 <div className="sidebar-header">
                     <HeartPulse className="logo-icon" size={36} />
                     <h1 className="logo-text">Mediflow</h1>
@@ -88,7 +88,7 @@ const MedicalDashboard = () => {
                         <span>Trigger Alert</span>
                     </button>
                 </div>
-            </aside>
+            </aside> */}
 
             <div className="main-content">
                 <header className="header">
