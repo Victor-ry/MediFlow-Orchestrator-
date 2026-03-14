@@ -1,6 +1,3 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Home, Bell } from 'lucide-react';
 import '../styles/Pages.css';
 import Side from '../components/Sidebar';
 import { getPatients } from '../utils/supabase';
