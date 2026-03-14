@@ -50,12 +50,20 @@ const OrchestratorPage = () => {
           <div className="placeholder-box">
             <h3>Workflow Orchestration Management</h3>
             <p>This page will contain workflow orchestration tools and management interface.</p>
-            <button
-              onClick={() => navigate('/orchestrator/consultation-queue')}
-              className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              View Patient Queue
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '1rem' }}>
+              <button
+                onClick={() => navigate('/orchestrator/consultation-queue')}
+                className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                View Patient Queue
+              </button>
+              <button
+                onClick={() => navigate('/orchestrator/department-queue')}
+                className="mt-6 px-6 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+              >
+                Department Queue Monitor
+              </button>
+            </div>
           </div>
         </div>
       </div>

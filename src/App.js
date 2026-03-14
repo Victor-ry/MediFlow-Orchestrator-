@@ -5,6 +5,7 @@ import OrchestratorPage from './pages/OrchestratorPage';
 import ServicesPage from './pages/ServicesPage';
 import ConsultationQueuePage from './pages/ConsultationQueuePage';
 import PatientIntakeTranscriptPage from './pages/PatientIntakeTranscriptPage';
+import DepartmentQueuePage from './pages/DepartmentQueuePage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/orchestrator" element={<OrchestratorPage />} />
         <Route path="/orchestrator/consultation-queue" element={<ConsultationQueuePage />} />
+        <Route path="/orchestrator/department-queue" element={<DepartmentQueuePage />} />
         <Route path="/orchestrator/transcript" element={<PatientIntakeTranscriptPage />} />
         <Route path="/services" element={<ServicesPage />} />
       </Routes>

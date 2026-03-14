@@ -11,6 +11,7 @@ const Side = ({ onTriggerAlert }) => {
     const navItems = [
         { path: '/', icon: Home, label: 'Home' },
         { path: '/orchestrator/consultation-queue', icon: Layers, label: 'Orchestrator' },
+        { path: '/orchestrator/department-queue', icon: Layers, label: 'Department Queue' },
         { path: '/services', icon: BarChart2, label: 'Services' },
     ];
 
