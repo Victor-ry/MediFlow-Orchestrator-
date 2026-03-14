@@ -22,8 +22,23 @@ export default function PatientIntakeTranscriptPage() {
   const handleProcessRoute = () => {
     console.log('Processing transcript for patient:', patient.patient_id);
     console.log('Transcript:', transcript);
-    navigate('/');
+    navigate('/orchestrator/ai-analysis', { state: { patient, transcript } });
   };
+
+  const handleProgressClick = (page) => {
+    if (page === 'consultation') {
+      navigate('/orchestrator/consultation-queue');
+    } else if (page === 'analysis') {
+      // Cannot navigate forward to analysis from transcript
+      return;
+    }
+  };
+
+  const progressSteps = [
+    { id: 'consultation', label: 'Consultation Queue', status: 'completed' },
+    { id: 'transcript', label: 'Patient Intake', status: 'current' },
+    { id: 'analysis', label: 'AI Analysis', status: 'upcoming' }
+  ];
 
   return (
     <div className="transcript-container">
@@ -44,6 +59,27 @@ export default function PatientIntakeTranscriptPage() {
 
         {/* Content */}
         <div className="transcript-content">
+          {/* Progress Tracker */}
+          <div className="progress-tracker">
+            {progressSteps.map((step, idx) => (
+              <React.Fragment key={step.id}>
+                <button
+                  className={`progress-step progress-${step.status}`}
+                  onClick={() => handleProgressClick(step.id)}
+                  disabled={step.status !== 'completed'}
+                >
+                  <span className="progress-number">
+                    {step.status === 'completed' ? '✓' : idx + 1}
+                  </span>
+                  <span className="progress-label">{step.label}</span>
+                </button>
+                {idx < progressSteps.length - 1 && (
+                  <div className={`progress-connector progress-${step.status}`}></div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
           <div className="transcript-titles">
             <h2 className="transcript-main-title">Patient Intake & Transcript</h2>
             <p className="transcript-subtitle">Input Clinical Transcript (Write/Voice):</p>

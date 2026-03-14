@@ -71,6 +71,21 @@ export default function ConsultationQueuePage() {
 
   const hasActiveFilters = searchTerm.trim() || selectedSex || minAge || maxAge;
 
+  const handleProgressClick = (page) => {
+    if (page === 'transcript') {
+      navigate('/orchestrator/transcript');
+    } else if (page === 'analysis') {
+      // Cannot navigate forward to analysis from consultation queue
+      return;
+    }
+  };
+
+  const progressSteps = [
+    { id: 'consultation', label: 'Consultation Queue', status: 'current' },
+    { id: 'transcript', label: 'Patient Intake', status: 'upcoming' },
+    { id: 'analysis', label: 'AI Analysis', status: 'upcoming' }
+  ];
+
   return (
     <div className="consultation-queue-container">
       <div className="consultation-queue-wrapper">
@@ -83,79 +98,100 @@ export default function ConsultationQueuePage() {
           <span className="consultation-queue-header-label">ORCHESTRATOR</span>
         </div>
 
-        {/* Search and Filter Bar */}
-        <div className="search-filter-bar">
-          <div className="search-input-group">
-            <input
-              type="text"
-              placeholder="Search by patient name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button 
-              className={`filter-toggle-button ${showFilters ? 'active' : ''}`}
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              ⚙️ Filters
-            </button>
-            {hasActiveFilters && (
+        {/* Content */}
+        <div className="consultation-queue-content">
+          {/* Progress Tracker */}
+          <div className="progress-tracker">
+            {progressSteps.map((step, idx) => (
+              <React.Fragment key={step.id}>
+                <button
+                  className={`progress-step progress-${step.status}`}
+                  onClick={() => handleProgressClick(step.id)}
+                  disabled={step.status !== 'completed'}
+                >
+                  <span className="progress-number">
+                    {step.status === 'completed' ? '✓' : idx + 1}
+                  </span>
+                  <span className="progress-label">{step.label}</span>
+                </button>
+                {idx < progressSteps.length - 1 && (
+                  <div className={`progress-connector progress-${step.status}`}></div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Search and Filter Bar */}
+          <div className="search-filter-bar">
+            <div className="search-input-group">
+              <input
+                type="text"
+                placeholder="Search by patient name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
               <button 
-                className="clear-filters-button"
-                onClick={clearFilters}
-                title="Clear all filters"
+                className={`filter-toggle-button ${showFilters ? 'active' : ''}`}
+                onClick={() => setShowFilters(!showFilters)}
               >
-                <X size={16} />
+                ⚙️ Filters
               </button>
+              {hasActiveFilters && (
+                <button 
+                  className="clear-filters-button"
+                  onClick={clearFilters}
+                  title="Clear all filters"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Panel */}
+            {showFilters && (
+              <div className="filter-panel">
+                <div className="filter-group">
+                  <label>Sex:</label>
+                  <select 
+                    value={selectedSex} 
+                    onChange={(e) => setSelectedSex(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="">All</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+
+                <div className="filter-group">
+                  <label>Age Range:</label>
+                  <div className="age-inputs">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={minAge}
+                      onChange={(e) => setMinAge(e.target.value)}
+                      className="age-input"
+                      min="0"
+                      max="120"
+                    />
+                    <span className="age-separator">-</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={maxAge}
+                      onChange={(e) => setMaxAge(e.target.value)}
+                      className="age-input"
+                      min="0"
+                      max="120"
+                    />
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
-          {/* Filter Panel */}
-          {showFilters && (
-            <div className="filter-panel">
-              <div className="filter-group">
-                <label>Sex:</label>
-                <select 
-                  value={selectedSex} 
-                  onChange={(e) => setSelectedSex(e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">All</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-
-              <div className="filter-group">
-                <label>Age Range:</label>
-                <div className="age-inputs">
-                  <input
-                    type="number"
-                    placeholder="Min"
-                    value={minAge}
-                    onChange={(e) => setMinAge(e.target.value)}
-                    className="age-input"
-                    min="0"
-                    max="120"
-                  />
-                  <span className="age-separator">-</span>
-                  <input
-                    type="number"
-                    placeholder="Max"
-                    value={maxAge}
-                    onChange={(e) => setMaxAge(e.target.value)}
-                    className="age-input"
-                    min="0"
-                    max="120"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="consultation-queue-content">
           <h2 className="consultation-queue-title">Patient Consultation Queue</h2>
 
           {/* Table */}
