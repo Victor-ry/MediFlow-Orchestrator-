@@ -177,7 +177,7 @@ const MedicalDashboard = () => {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                                 <XAxis dataKey="name" stroke="#9ca3af" />
                                 <YAxis stroke="#9ca3af" />
-                                <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151' }} />
+                                <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', color: '#111827' }} />
                                 <Legend />
                                 <Line type="monotone" dataKey="influenza" stroke="#38bdf8" strokeWidth={2} activeDot={{ r: 8 }} />
                                 <Line type="monotone" dataKey="covid19" stroke="#f87171" strokeWidth={2} />
