@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { getAllPatients, searchPatients } from '../utils/patients';
+import Sidebar from '../components/Sidebar';
 import '../styles/ConsultationQueuePage.css';
 
 const ROWS_PER_PAGE = 4;
@@ -87,7 +88,9 @@ export default function ConsultationQueuePage() {
   ];
 
   return (
-    <div className="consultation-queue-container">
+    <div className="page-layout">
+      <Sidebar />
+      <div className="consultation-queue-container">
       <div className="consultation-queue-wrapper">
         {/* Header */}
         <div className="consultation-queue-header">
@@ -123,14 +126,14 @@ export default function ConsultationQueuePage() {
 
           {/* Search and Filter Bar */}
           <div className="search-filter-bar">
-            <div className="search-input-group">
-              <input
-                type="text"
-                placeholder="Search by patient name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
-              />
+            <input
+              type="text"
+              placeholder="Search by patient name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <div className="filter-controls">
               <button 
                 className={`filter-toggle-button ${showFilters ? 'active' : ''}`}
                 onClick={() => setShowFilters(!showFilters)}
@@ -150,7 +153,7 @@ export default function ConsultationQueuePage() {
 
             {/* Filter Panel */}
             {showFilters && (
-              <div className="filter-panel">
+              <div className="filter-panel-dropdown">
                 <div className="filter-group">
                   <label>Sex:</label>
                   <select 
@@ -258,6 +261,7 @@ export default function ConsultationQueuePage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

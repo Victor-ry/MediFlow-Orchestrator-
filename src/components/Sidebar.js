@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Layers, BarChart2, Bell, HeartPulse } from 'lucide-react';
+import { Home, Layers, BarChart2, HeartPulse } from 'lucide-react';
 import './Sidebar.css';
 
-const Side = ({ onTriggerAlert }) => {
+const Side = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -44,12 +44,6 @@ const Side = ({ onTriggerAlert }) => {
                     );
                 })}
             </nav>
-            <div className="sidebar-footer">
-                <button className="alert-button" onClick={onTriggerAlert}>
-                    <Bell size={20} />
-                    <span>Trigger Alert</span>
-                </button>
-            </div>
         </aside>
     );
 };

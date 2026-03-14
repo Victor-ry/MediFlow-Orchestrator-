@@ -1,6 +1,11 @@
 /* Patient Intake Transcript Page Styles */
-.transcript-container {
+.page-layout {
+  display: flex;
   min-height: 100vh;
+}
+
+.transcript-container {
+  flex: 1;
   background-color: #f1f5f9;
   padding: 1rem;
 }
@@ -114,6 +119,10 @@
 }
 
 @media (max-width: 768px) {
+  .page-layout {
+    flex-direction: column;
+  }
+
   .progress-tracker {
     gap: 0.25rem;
     justify-content: center;

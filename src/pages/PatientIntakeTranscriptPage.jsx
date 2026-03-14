@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Activity } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 import '../styles/PatientIntakeTranscriptPage.css';
 
 export default function PatientIntakeTranscriptPage() {
@@ -41,8 +42,10 @@ export default function PatientIntakeTranscriptPage() {
   ];
 
   return (
-    <div className="transcript-container">
-      <div className="transcript-wrapper">
+    <div className="page-layout">
+      <Sidebar />
+      <div className="transcript-container">
+        <div className="transcript-wrapper">
         {/* Header */}
         <div className="transcript-header">
           <div className="transcript-header-left">
@@ -127,6 +130,7 @@ export default function PatientIntakeTranscriptPage() {
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

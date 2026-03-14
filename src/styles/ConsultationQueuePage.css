@@ -1,6 +1,11 @@
 /* Consultation Queue Page Styles */
-.consultation-queue-container {
+.page-layout {
+  display: flex;
   min-height: 100vh;
+}
+
+.consultation-queue-container {
+  flex: 1;
   background-color: #f1f5f9;
   padding: 1rem;
 }
@@ -113,6 +118,10 @@
 }
 
 @media (max-width: 768px) {
+  .page-layout {
+    flex-direction: column;
+  }
+
   .progress-tracker {
     gap: 0.25rem;
     justify-content: center;
@@ -306,23 +315,19 @@
 
 /* Search and Filter Bar */
 .search-filter-bar {
-  background-color: #f8fafc;
-  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: transparent;
+  padding: 0.75rem 0;
   margin: 0 0 1.5rem 0;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.search-input-group {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  margin-bottom: 1rem;
+  position: relative;
+  justify-content: flex-end;
 }
 
 .search-input {
-  flex: 1;
   padding: 0.625rem 1rem;
   border: 1px solid #cbd5e1;
   border-radius: 0.375rem;
@@ -330,6 +335,7 @@
   background-color: #ffffff;
   color: #1e293b;
   transition: all 0.2s;
+  width: 400px;
 }
 
 .search-input:focus {
@@ -340,6 +346,12 @@
 
 .search-input::placeholder {
   color: #94a3b8;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
 }
 
 .filter-toggle-button {
@@ -380,13 +392,26 @@
   background-color: #dc2626;
 }
 
-/* Filter Panel */
-.filter-panel {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+/* Filter Panel Dropdown */
+.filter-panel-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 280px;
+}
+
+.filter-panel-dropdown .filter-group {
+  margin-bottom: 0.75rem;
+}
+
+.filter-panel-dropdown .filter-group:last-child {
+  margin-bottom: 0;
 }
 
 .filter-group {
@@ -425,7 +450,7 @@
 }
 
 .age-input {
-  width: 80px;
+  flex: 1;
   padding: 0.625rem 0.75rem;
   border: 1px solid #cbd5e1;
   border-radius: 0.375rem;
@@ -447,4 +472,29 @@
 .age-separator {
   color: #94a3b8;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .search-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-input {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .filter-controls {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .filter-panel-dropdown {
+    position: static;
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+    margin-top: 0.5rem;
+    min-width: auto;
+  }
 }

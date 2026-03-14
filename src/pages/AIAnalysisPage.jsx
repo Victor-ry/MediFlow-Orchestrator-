@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, CheckCircle } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 import '../styles/AIAnalysisPage.css';
 
 export default function AIAnalysisPage() {
@@ -87,8 +88,10 @@ export default function AIAnalysisPage() {
   ];
 
   return (
-    <div className="ai-analysis-container">
-      <div className="ai-analysis-wrapper">
+    <div className="page-layout">
+      <Sidebar />
+      <div className="ai-analysis-container">
+        <div className="ai-analysis-wrapper">
         {/* Header */}
         <div className="ai-analysis-header">
           <div className="header-content">
@@ -235,7 +238,8 @@ export default function AIAnalysisPage() {
               </button>
             </div>
           </div>
-        )}
+        )}  
+      </div>
       </div>
     </div>
   );

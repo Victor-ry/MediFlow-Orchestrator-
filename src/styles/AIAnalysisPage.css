@@ -1,6 +1,11 @@
 /* AI Analysis Page Styles - Standardized Design */
-.ai-analysis-container {
+.page-layout {
+  display: flex;
   min-height: 100vh;
+}
+
+.ai-analysis-container {
+  flex: 1;
   background-color: #f1f5f9;
   padding: 1rem;
 }
@@ -143,6 +148,10 @@
 
 /* Responsive Progress Tracker */
 @media (max-width: 768px) {
+  .page-layout {
+    flex-direction: column;
+  }
+
   .progress-tracker {
     gap: 0.25rem;
     justify-content: center;
