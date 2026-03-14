@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { getAllPatients, searchPatients } from "../utils/patients";
 import Sidebar from "../components/Sidebar";
 import "../styles/ConsultationQueuePage.css";
 import { getPatients } from "../utils/supabase";
