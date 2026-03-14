@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Home, Layers, BarChart2, Bell, X, HeartPulse, Bot, ShieldCheck, CircleDollarSign } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './MedicalDashboard.css';
+import { getPatients } from '../utils/supabase';
 
 const departmentData = [
-  { name: 'Radiology', status: 'High', waitTime: '45min' },
-  { name: 'Cardiology', status: 'Medium', waitTime: '25min' },
-  { name: 'Pharmacy', status: 'Low', waitTime: '10min' },
-  { name: 'Laboratory', status: 'Medium', waitTime: '30min' },
-  { name: 'Surgery', status: 'High', waitTime: '1h 15min' },
+    { name: 'Radiology', status: 'High', waitTime: '45min' },
+    { name: 'Cardiology', status: 'Medium', waitTime: '25min' },
+    { name: 'Pharmacy', status: 'Low', waitTime: '10min' },
+    { name: 'Laboratory', status: 'Medium', waitTime: '30min' },
+    { name: 'Surgery', status: 'High', waitTime: '1h 15min' },
 ];
 
 const diseaseData = [
@@ -42,6 +43,15 @@ const MedicalDashboard = () => {
         return 'status-low';
     };
 
+    const fetchPatients = async () => {
+        const result = await getPatients({
+            patientId: "P10234"
+        });
+
+        console.log(result.data)
+        console.log(result.pagination)
+    }
+
     return (
         <div className="dashboard-container">
             <aside className="sidebar">
@@ -73,7 +83,7 @@ const MedicalDashboard = () => {
                     </button>
                 </nav>
                 <div className="sidebar-footer">
-                    <button className="alert-button" onClick={() => setShowAlert(true)}>
+                    <button className="alert-button" onClick={() => fetchPatients()}>
                         <Bell size={20} />
                         <span>Trigger Alert</span>
                     </button>
@@ -145,10 +155,10 @@ const MedicalDashboard = () => {
                     </div>
 
                     <div className="grid-item metrics-grid">
-                       <MetricCard icon={<Bot size={28} />} title="AI Accuracy" value="98.7" unit="%" />
-                       <MetricCard icon={<ShieldCheck size={28} />} title="Total Alert Count" value="142" />
-                       <MetricCard icon={<CircleDollarSign size={28} />} title="Token Usage" value="1.2M" />
-                       <MetricCard icon={<HeartPulse size={28} />} title="Daily Patient Count" value="1,284" />
+                        <MetricCard icon={<Bot size={28} />} title="AI Accuracy" value="98.7" unit="%" />
+                        <MetricCard icon={<ShieldCheck size={28} />} title="Total Alert Count" value="142" />
+                        <MetricCard icon={<CircleDollarSign size={28} />} title="Token Usage" value="1.2M" />
+                        <MetricCard icon={<HeartPulse size={28} />} title="Daily Patient Count" value="1,284" />
                     </div>
                 </div>
             </div>
