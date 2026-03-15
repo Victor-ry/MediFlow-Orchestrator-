@@ -141,6 +141,19 @@ const styles = `
   align-items: center;
 }
 
+.department-queue-page .filter-section {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.department-queue-page .filter-section label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
 .department-queue-page .summary-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -154,6 +167,39 @@ const styles = `
   border-radius: 0.65rem;
   padding: 0.75rem;
   color: #0f172a;
+}
+
+.department-queue-page .summary-card.rooms {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+.department-queue-page .summary-card.rooms .card-title {
+  color: #1d4ed8;
+}
+.department-queue-page .summary-card.rooms .card-value {
+  color: #1e3a8a;
+}
+
+.department-queue-page .summary-card.waiting {
+  background: #fefce8;
+  border-color: #fde68a;
+}
+.department-queue-page .summary-card.waiting .card-title {
+  color: #b45309;
+}
+.department-queue-page .summary-card.waiting .card-value {
+  color: #78350f;
+}
+
+.department-queue-page .summary-card.risk {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.department-queue-page .summary-card.risk .card-title {
+  color: #b91c1c;
+}
+.department-queue-page .summary-card.risk .card-value {
+  color: #7f1d1d;
 }
 
 .department-queue-page .card-title {
@@ -186,6 +232,15 @@ const styles = `
   min-width: 0;
 }
 
+.department-queue-page .card.room-counter-card {
+  background: linear-gradient(to bottom right, #ffffff, #eff6ff);
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.08), 0 2px 4px -1px rgba(59, 130, 246, 0.04);
+}
+.department-queue-page .card.room-counter-card .section-title {
+  color: #1e3a8a;
+}
+
 .department-queue-page .section-title {
   margin: 0 0 0.6rem;
   font-size: 0.95rem;
@@ -201,10 +256,16 @@ const styles = `
 .department-queue-page .room {
   border: 1px solid #e5e7eb;
   border-radius: 0.55rem;
-  background: #f8fafc;
+  background: #ffffff;
   padding: 0.45rem 0.5rem;
   display: grid;
   gap: 0.25rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.department-queue-page .room.occupied {
+  border-color: #93c5fd;
+  background: #dbeafe;
 }
 
 .department-queue-page .room-head {
@@ -1251,19 +1312,23 @@ export default function DepartmentQueuePage() {
           <div>
             <div className="title-row">
               <h2>Department Queue</h2>
-              <select
-                className="department-filter"
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}
-              >
-                {departmentOptions.map((dept) => (
-                  <option key={dept} value={dept}>{dept}</option>
-                ))}
-              </select>
             </div>
             <p className="subtitle">Check in for Department Queue</p>
           </div>
           <button className="btn btn-primary" onClick={openCheckInModal} disabled={!selectedDepartment}><Plus size={14} /> Check-in Patient</button>
+        </div>
+
+        <div className="filter-section">
+          <label>Filter by Department:</label>
+          <select
+            className="department-filter"
+            value={selectedDepartment}
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+          >
+            {departmentOptions.map((dept) => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
         </div>
 
         {queueFeedback.message ? (
@@ -1271,13 +1336,13 @@ export default function DepartmentQueuePage() {
         ) : null}
 
         <div className="summary-row">
-          <div className="summary-card"><div className="card-title"><Stethoscope size={14} /> Active Rooms</div><div className="card-value">{filteredRooms.filter((r) => r.patient).length}</div></div>
-          <div className="summary-card"><div className="card-title"><Clock size={14} /> Waiting Pool</div><div className="card-value">{filteredQueue.length}</div></div>
-          <div className="summary-card"><div className="card-title"><CheckCircle size={14} /> SLA Risk</div><div className="card-value">{filteredQueue.filter((q) => q.priority === 'Routine' && q.wait > 30).length}</div></div>
+          <div className="summary-card rooms"><div className="card-title"><Stethoscope size={14} /> Active Rooms</div><div className="card-value">{filteredRooms.filter((r) => r.patient).length}</div></div>
+          <div className="summary-card waiting"><div className="card-title"><Clock size={14} /> Waiting Pool</div><div className="card-value">{filteredQueue.length}</div></div>
+          <div className="summary-card risk"><div className="card-title"><CheckCircle size={14} /> SLA Risk</div><div className="card-value">{filteredQueue.filter((q) => q.priority === 'Routine' && q.wait > 30).length}</div></div>
         </div>
 
         <div className="dept-grid">
-          <section className="card">
+          <section className="card room-counter-card">
             <div className="section-title">Room/Counter</div>
             <div className="room-grid">
               {filteredRooms.length === 0 ? (
