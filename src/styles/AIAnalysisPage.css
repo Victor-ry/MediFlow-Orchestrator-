@@ -43,6 +43,45 @@
   font-weight: 500;
 }
 
+.ai-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.ai-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.26rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.ai-status-model-output {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ai-status-schema-repaired {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.ai-status-fallback {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ai-status-detail {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
 .ai-analysis-content {
   background-color: #ffffff;
   border-radius: 0 0 1rem 1rem;
@@ -97,6 +136,126 @@
   white-space: pre-wrap;
 }
 
+.insight-symbol-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.insight-symbol {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.34rem 0.58rem;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: help;
+}
+
+.insight-symbol-info {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.insight-symbol-warning {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.insight-symbol-glyph {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.insight-symbol-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.insight-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 260px;
+  max-width: 420px;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+
+.insight-symbol:hover .insight-tooltip,
+.insight-symbol:focus-within .insight-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.patient-details-card {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+}
+
+.patient-details-title {
+  margin: 0 0 0.8rem 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.patient-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.7rem;
+}
+
+.patient-detail-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.patient-detail-label {
+  font-size: 0.72rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+
+.patient-detail-value {
+  font-size: 0.86rem;
+  color: #1e293b;
+  font-weight: 600;
+  word-break: break-word;
+}
+
 .llm-output-card {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -144,6 +303,11 @@
   padding: 1rem 1.1rem;
 }
 
+.analysis-feedback-card-warning {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
 .analysis-feedback-title {
   margin: 0 0 0.35rem 0;
   font-size: 0.95rem;
@@ -156,6 +320,95 @@
   font-size: 0.875rem;
   line-height: 1.6;
   color: #475569;
+}
+
+.ticket-modal {
+  max-width: 700px;
+  width: min(90vw, 700px);
+}
+
+.ticket-preview-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  color: #334155;
+}
+
+.ticket-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.ticket-preview-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  background: #f8fafc;
+}
+
+.ticket-preview-main {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ticket-preview-sub {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-top: 0.2rem;
+}
+
+.ticket-preview-badge {
+  margin-top: 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.ticket-preview-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.clinical-alerts-card {
+  border: 1px solid #fecaca;
+  background: #fff7ed;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+
+.clinical-alerts-title {
+  margin: 0 0 0.55rem 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #7c2d12;
+}
+
+.clinical-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.clinical-alert-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #9a3412;
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 /* Progress Tracker */
@@ -211,6 +464,23 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 10px;
+  table-layout: fixed;
+}
+
+.col-intent {
+  width: 33%;
+}
+
+.col-disease {
+  width: 23%;
+}
+
+.col-recommendation {
+  width: 28%;
+}
+
+.col-priority {
+  width: 16%;
 }
 
 .ai-table th {
@@ -220,6 +490,32 @@
   font-weight: 700;
   font-size: 0.875rem;
   text-transform: uppercase;
+}
+
+.table-head-main {
+  font-size: 0.83rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.table-head-sub {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: #64748b;
+  text-transform: none;
+  font-weight: 600;
+}
+
+.cell-section-header {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  padding: 0.24rem 0.56rem;
+  border-radius: 999px;
+  background-color: #e2e8f0;
+  color: #334155;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .ai-table td {
@@ -259,8 +555,30 @@
   transition: box-shadow 0.2s;
 }
 
+.analysis-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .draggable-intent:hover {
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.intent-card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.intent-service-meta {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.intent-spacer {
+  flex: 1;
 }
 
 .intent-meta-row {
@@ -303,13 +621,15 @@
 
 /* Disease & Recommendations Inside Table */
 .disease-list { display: flex; flex-direction: column; gap: 0.5rem; }
-.disease-item { padding: 8px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; }
+.disease-item { padding: 10px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; }
 .disease-content { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+.disease-copy { display: flex; flex-direction: column; gap: 0.2rem; }
 .warning-icon { color: #ef4444; }
 .disease-name { font-weight: 600; color: #1e293b; }
 .disease-confidence { color: #94a3b8; }
 
 .recommendation-content { background: white; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
+.recommendation-content-warning { border-color: #fcd34d; background: #fffbeb; }
 .recommendation-text { margin: 0; font-size: 0.875rem; color: #475569; line-height: 1.5; }
 
 .analysis-state-card {
