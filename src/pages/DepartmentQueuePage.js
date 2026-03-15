@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CheckCircle, Clock, Plus, Pen, Stethoscope, Trash2, User, X } from 'lucide-react';
 import Side from '../components/Sidebar';
 import { getDepartments } from '../utils/departmentDb';
-import { getOrdersByPatientIdAndDepartment, getPatientById } from '../utils/checkPatientRoute';
+import { getOrdersByPatientId, getOrdersByPatientIdAndDepartment, getPatientById } from '../utils/checkPatientRoute';
 import {
   createDepartmentQueueEntry,
   formatQueuePriority,
@@ -740,6 +741,27 @@ const INITIAL_QUEUE = [];
 
 const normalizeDepartment = (value) => (value || '').trim().toLowerCase();
 
+const normalizeDepartmentKey = (value) => {
+  const normalized = normalizeDepartment(value).replace(/[^a-z0-9]/g, '');
+
+  if (!normalized) return '';
+  if (normalized === 'pharm' || normalized.startsWith('pharmac')) return 'pharm';
+  if (normalized === 'rad' || normalized.startsWith('radio')) return 'rad';
+  if (normalized === 'res' || normalized.startsWith('resp')) return 'res';
+  if (normalized === 'gas' || normalized.startsWith('gastro')) return 'gas';
+  if (normalized === 'health' || normalized.startsWith('health')) return 'health';
+  if (normalized === 'lab' || normalized.startsWith('laborator')) return 'lab';
+
+  return normalized;
+};
+
+const isSameDepartment = (left, right) => {
+  const leftKey = normalizeDepartmentKey(left);
+  const rightKey = normalizeDepartmentKey(right);
+
+  return Boolean(leftKey) && leftKey === rightKey;
+};
+
 const uniqueByNormalizedDepartment = (values) => {
   const seen = new Set();
   const result = [];
@@ -748,7 +770,7 @@ const uniqueByNormalizedDepartment = (values) => {
     const trimmed = (value || '').trim();
     if (!trimmed) return;
 
-    const key = normalizeDepartment(trimmed);
+    const key = normalizeDepartmentKey(trimmed);
     if (seen.has(key)) return;
 
     seen.add(key);
@@ -786,7 +808,11 @@ const formatOrderTimestamp = (value) => {
 
 const getOrderStatusClassName = (status) => (status || 'pending').toLowerCase();
 
+const CLOSED_ORDER_STATUSES = new Set(['complete', 'completed', 'cancelled']);
+const isActiveOrderStatus = (status) => !CLOSED_ORDER_STATUSES.has(String(status || '').trim().toLowerCase());
+
 export default function DepartmentQueuePage() {
+  const location = useLocation();
   const [rooms, setRooms] = useState(INITIAL_ROOMS);
   const [queue, setQueue] = useState(INITIAL_QUEUE);
   const [departments, setDepartments] = useState([]);
@@ -802,6 +828,7 @@ export default function DepartmentQueuePage() {
   const [selectedOrderId, setSelectedOrderId] = useState('');
   const [checkInBusy, setCheckInBusy] = useState(false);
   const [checkInError, setCheckInError] = useState('');
+  const [suggestedDepartmentForCheckIn, setSuggestedDepartmentForCheckIn] = useState('');
 
   useEffect(() => {
     const loadDepartments = async () => {
@@ -823,20 +850,20 @@ export default function DepartmentQueuePage() {
   }, [departments]);
 
   const selectedDepartmentRecord = useMemo(() => (
-    departments.find((department) => normalizeDepartment(department.departmentName) === normalizeDepartment(selectedDepartment)) || null
+    departments.find((department) => isSameDepartment(department.departmentName, selectedDepartment)) || null
   ), [departments, selectedDepartment]);
 
   useEffect(() => {
     const baseDepartments = uniqueByNormalizedDepartment(['Lab', ...dbDepartmentNames]);
-    const baseDepartmentKeys = new Set(baseDepartments.map((dept) => normalizeDepartment(dept)));
+    const baseDepartmentKeys = new Set(baseDepartments.map((dept) => normalizeDepartmentKey(dept)));
 
     setRooms((prev) => {
       const existingDepartments = new Set(
         prev
-          .map((room) => normalizeDepartment(room.department))
+          .map((room) => normalizeDepartmentKey(room.department))
           .filter(Boolean)
       );
-      const missingDepartments = baseDepartments.filter((dept) => !existingDepartments.has(normalizeDepartment(dept)));
+      const missingDepartments = baseDepartments.filter((dept) => !existingDepartments.has(normalizeDepartmentKey(dept)));
       if (missingDepartments.length === 0) return prev;
 
       let nextId = prev.reduce((maxId, room) => Math.max(maxId, room.id), 0) + 1;
@@ -863,10 +890,10 @@ export default function DepartmentQueuePage() {
     });
 
     setQueue((prev) => prev.map((item) => {
-      const itemKey = normalizeDepartment(item.department);
+      const itemKey = normalizeDepartmentKey(item.department);
       if (!itemKey || !baseDepartmentKeys.has(itemKey)) return item;
 
-      const canonicalName = baseDepartments.find((dept) => normalizeDepartment(dept) === itemKey);
+      const canonicalName = baseDepartments.find((dept) => normalizeDepartmentKey(dept) === itemKey);
       if (!canonicalName || canonicalName === item.department) return item;
 
       return { ...item, department: canonicalName };
@@ -875,12 +902,12 @@ export default function DepartmentQueuePage() {
 
   const filteredQueue = useMemo(() => {
     if (!selectedDepartment) return [];
-    return queue.filter((item) => normalizeDepartment(item.department) === normalizeDepartment(selectedDepartment));
+    return queue.filter((item) => isSameDepartment(item.department, selectedDepartment));
   }, [queue, selectedDepartment]);
 
   const filteredRooms = useMemo(() => {
     if (!selectedDepartment) return [];
-    return rooms.filter((room) => normalizeDepartment(room.department) === normalizeDepartment(selectedDepartment));
+    return rooms.filter((room) => isSameDepartment(room.department, selectedDepartment));
   }, [rooms, selectedDepartment]);
 
   const sortedQueue = useMemo(() => [...filteredQueue].sort((a, b) => {
@@ -903,7 +930,7 @@ export default function DepartmentQueuePage() {
     }
 
     const hasCurrentSelection = departmentOptions.some(
-      (dept) => normalizeDepartment(dept) === normalizeDepartment(selectedDepartment)
+      (dept) => isSameDepartment(dept, selectedDepartment)
     );
 
     if (!hasCurrentSelection) {
@@ -922,7 +949,7 @@ export default function DepartmentQueuePage() {
     const result = await getDepartmentQueueEntries({
       departmentCode: selectedDepartmentRecord?.departmentCode,
       departmentName: selectedDepartmentRecord?.departmentName || selectedDepartment,
-      statuses: ['waiting'],
+      statuses: ['waiting', 'Waiting'],
     });
 
     if (result.error) {
@@ -949,7 +976,7 @@ export default function DepartmentQueuePage() {
       const result = await getDepartmentQueueEntries({
         departmentCode: selectedDepartmentRecord?.departmentCode,
         departmentName: selectedDepartmentRecord?.departmentName || selectedDepartment,
-        statuses: ['waiting'],
+        statuses: ['waiting', 'Waiting'],
       });
 
       if (result.error) {
@@ -967,12 +994,38 @@ export default function DepartmentQueuePage() {
     syncQueue();
   }, [selectedDepartment, selectedDepartmentRecord?.departmentCode, selectedDepartmentRecord?.departmentName]);
 
+  useEffect(() => {
+    const successMessage = location.state?.orderCreationSuccess;
+    const unmatchedRoutes = location.state?.orderCreationUnmatchedRoutes;
+
+    if (!successMessage) return;
+
+    const unmatchedNote = Array.isArray(unmatchedRoutes) && unmatchedRoutes.length > 0
+      ? ` Unmatched routes: ${unmatchedRoutes.map((item) => `${item.intent} (${item.departmentCode})`).join(', ')}.`
+      : '';
+
+    setQueueFeedback({
+      type: 'success',
+      message: `${successMessage}${unmatchedNote}`,
+    });
+  }, [location.state]);
+
   const resetCheckInState = () => {
     setCheckInDraft({ patientId: '' });
     setCheckInCandidate(null);
     setSelectedOrderId('');
     setCheckInError('');
     setCheckInBusy(false);
+    setSuggestedDepartmentForCheckIn('');
+  };
+
+  const switchCheckInDepartment = () => {
+    if (!suggestedDepartmentForCheckIn) return;
+
+    setSelectedDepartment(suggestedDepartmentForCheckIn);
+    setCheckInCandidate(null);
+    setCheckInError(`Department switched to ${suggestedDepartmentForCheckIn}. Click Verify Patient to load matched orders.`);
+    setSuggestedDepartmentForCheckIn('');
   };
 
   const selectedOrder = useMemo(() => {
@@ -1027,7 +1080,7 @@ export default function DepartmentQueuePage() {
     const target = queue.find((item) => item.id === patientId);
     if (!target) return;
 
-    const availableRoom = rooms.find((room) => normalizeDepartment(room.department) === normalizeDepartment(target.department) && room.status === 'available');
+    const availableRoom = rooms.find((room) => isSameDepartment(room.department, target.department) && room.status === 'available');
     if (!availableRoom) {
       window.alert(`No available Room/Counter for ${target.department}.`);
       return;
@@ -1074,6 +1127,7 @@ export default function DepartmentQueuePage() {
     setCheckInBusy(true);
     setCheckInError('');
     setCheckInCandidate(null);
+    setSuggestedDepartmentForCheckIn('');
 
     const patientResult = await getPatientById(patientId);
     if (patientResult.error || !patientResult.data) {
@@ -1111,10 +1165,20 @@ export default function DepartmentQueuePage() {
       return;
     }
 
-    const eligibleOrders = (ordersResult.data || []).filter((order) => order.status?.toLowerCase() !== 'complete');
+    const eligibleOrders = (ordersResult.data || []).filter((order) => isActiveOrderStatus(order.status));
 
     if (eligibleOrders.length === 0) {
-      setCheckInError(`Patient ${patientId} has no active doctor order for ${selectedDepartment}. Consultation must be completed before queuing.`);
+      const anyActiveOrdersResult = await getOrdersByPatientId(patientId);
+      const anyActiveOrders = (anyActiveOrdersResult.data || []).filter((order) => isActiveOrderStatus(order.status));
+
+      if (anyActiveOrders.length > 0) {
+        const activeDepartments = [...new Set(anyActiveOrders.map((order) => order.Department?.departmentName || order.departmentCode).filter(Boolean))].join(', ');
+        const suggestedDepartment = anyActiveOrders[0]?.Department?.departmentName || anyActiveOrders[0]?.departmentCode || '';
+        setSuggestedDepartmentForCheckIn(suggestedDepartment);
+        setCheckInError(`Patient ${patientId} has active order(s), but not for ${selectedDepartment}. Active department(s): ${activeDepartments}.`);
+      } else {
+        setCheckInError(`Patient ${patientId} has no active doctor order for ${selectedDepartment}. Consultation must be completed before queuing.`);
+      }
       setCheckInBusy(false);
       return;
     }
@@ -1347,6 +1411,13 @@ export default function DepartmentQueuePage() {
 
                   <div className="check-in-column">
                     {checkInError ? <div className="feedback-banner error">{checkInError}</div> : null}
+                    {checkInError && suggestedDepartmentForCheckIn ? (
+                      <div className="modal-actions" style={{ marginTop: 0 }}>
+                        <button type="button" className="btn btn-soft" onClick={switchCheckInDepartment}>
+                          Switch Department to {suggestedDepartmentForCheckIn}
+                        </button>
+                      </div>
+                    ) : null}
 
                     {checkInCandidate ? (
                       <div className="subsection-card">

@@ -10,7 +10,7 @@ const Side = () => {
     // 定义导航项配置
     const navItems = [
         { path: '/', icon: Home, label: 'Home' },
-        { path: '/orchestrator/consultation-queue', icon: Layers, label: 'Orchestrator' },
+        { path: '/orchestrator/consultation-queue', icon: Layers, label: 'Consultation' },
         { path: '/orchestrator/department-queue', icon: Layers, label: 'Department Queue' },
         { path: '/services', icon: BarChart2, label: 'Services' },
     ];

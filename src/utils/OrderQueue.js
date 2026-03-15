@@ -1,6 +1,25 @@
 import { supabase } from './supabase';
 
-const ACTIVE_QUEUE_STATUSES = ['waiting', 'called'];
+const ORDER_STATUS = {
+    PENDING: 'Pending',
+    WAITING: 'Waiting',
+    CALLED: 'Called',
+    COMPLETE: 'Complete',
+    CANCELLED: 'Cancelled',
+};
+
+const QUEUE_STATUS = {
+    PENDING: 'Pending',
+    WAITING: 'Waiting',
+    CALLED: 'Called',
+    COMPLETED: 'Completed',
+    CANCELLED: 'Cancelled',
+};
+
+const CLOSED_ORDER_STATUSES = new Set(['complete', 'completed', 'cancelled']);
+const ACTIVE_QUEUE_STATUSES = [QUEUE_STATUS.WAITING, QUEUE_STATUS.CALLED, 'waiting', 'called'];
+
+const isClosedOrderStatus = (status) => CLOSED_ORDER_STATUSES.has(String(status || '').trim().toLowerCase());
 
 const normalizePriority = (priority) => {
     if (priority === null || priority === undefined || priority === '') {
@@ -203,7 +222,6 @@ export async function getOrdersByPatientId(patientId, departmentcode) {
             location
         )`)
         .eq('patient_id', patientId)
-        .neq('status', 'complete')
         .order('priority', { ascending: true });
 
     if (departmentcode) {
@@ -217,11 +235,11 @@ export async function getOrdersByPatientId(patientId, departmentcode) {
         return { data: null, error };
     }
 
-    const enrichedOrders = await enrichOrders(data || []);
+    const enrichedOrders = await enrichOrders((data || []).filter((order) => !isClosedOrderStatus(order.status)));
     return { data: enrichedOrders, error: null };
 }
 
-export const getDepartmentQueueEntries = async ({ departmentCode, departmentName, statuses = ['waiting'] } = {}) => {
+export const getDepartmentQueueEntries = async ({ departmentCode, departmentName, statuses = [QUEUE_STATUS.WAITING, 'waiting'] } = {}) => {
     try {
         let query = supabase
             .from('Queue')
@@ -363,7 +381,7 @@ export const createDepartmentQueueEntry = async ({ orderIds = [] } = {}) => {
             departmentCode: order.departmentCode,
             queue_number: buildQueueNumber(order.departmentCode, baseCount + index + 1),
             estimated_wait_minutes: 0,
-            status: 'waiting',
+            status: QUEUE_STATUS.WAITING,
         }));
 
         const { data, error } = await supabase
@@ -404,7 +422,7 @@ export const createDepartmentQueueEntry = async ({ orderIds = [] } = {}) => {
 
         await supabase
             .from('Order')
-            .update({ status: 'waiting' })
+            .update({ status: ORDER_STATUS.WAITING })
             .in('order_id', orderIds);
 
         const queueEntries = groupQueueRowsToEntries(await enrichQueueRows(data || []));
@@ -426,19 +444,26 @@ export const updateDepartmentQueueEntryStatus = async (orderIds, status) => {
             throw new Error('No order IDs provided for status update.');
         }
 
-        const nextQueueStatus = status === 'complete' ? 'completed' : status;
+        const queueStatusMap = {
+            called: QUEUE_STATUS.CALLED,
+            complete: QUEUE_STATUS.COMPLETED,
+            cancelled: QUEUE_STATUS.CANCELLED,
+            waiting: QUEUE_STATUS.WAITING,
+        };
+
+        const nextQueueStatus = queueStatusMap[status] || status;
         const orderStatusMap = {
-            called: 'called',
-            complete: 'complete',
-            cancelled: 'pending',
-            waiting: 'waiting',
+            called: ORDER_STATUS.CALLED,
+            complete: ORDER_STATUS.COMPLETE,
+            cancelled: ORDER_STATUS.PENDING,
+            waiting: ORDER_STATUS.WAITING,
         };
 
         const queueUpdatePayload = {
             status: nextQueueStatus,
         };
 
-        if (nextQueueStatus === 'completed' || nextQueueStatus === 'cancelled') {
+        if (nextQueueStatus === QUEUE_STATUS.COMPLETED || nextQueueStatus === QUEUE_STATUS.CANCELLED) {
             queueUpdatePayload.completed_at = new Date().toISOString();
         }
 

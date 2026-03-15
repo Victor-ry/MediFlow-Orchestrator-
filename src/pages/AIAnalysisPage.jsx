@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, CheckCircle, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { getDepartments } from '../utils/departmentDb';
+import { getServices } from '../utils/servicesDb';
+import { createConsultationRecord, createOrdersFromConfirmedRoutes } from '../utils/routeOrdersDb';
 import '../styles/AIAnalysisPage.css';
 
 export default function AIAnalysisPage() {
@@ -13,9 +15,12 @@ export default function AIAnalysisPage() {
   const [isCustomRouteModalOpen, setIsCustomRouteModalOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [deptSearch, setDeptSearch] = useState('');
+  const [isSavingRoute, setIsSavingRoute] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   // Get patient data from route state
   const patient = location.state?.patient || {};
+  const transcript = location.state?.transcript || '';
 
   // Mock AI analysis 
   const extractedIntents = [
@@ -31,8 +36,71 @@ export default function AIAnalysisPage() {
 
   const aiRecommendation = 'Urgent referral to Cardiology for further evaluation. Order ECG and troponin labs immediately. Patient requires continuous cardiac monitoring.';
 
-  const handleConfirmRoute = () => {
-    navigate('/orchestrator/consultation-queue');
+  const handleConfirmRoute = async () => {
+    if (!patient?.patient_id || confirmedRoutes.length === 0) {
+      return;
+    }
+
+    setIsSavingRoute(true);
+    setSaveError('');
+
+    const [departmentsResult, servicesResult] = await Promise.all([
+      getDepartments(),
+      getServices(),
+    ]);
+
+    if (departmentsResult.error) {
+      setSaveError(departmentsResult.error.message || 'Unable to load departments for order creation.');
+      setIsSavingRoute(false);
+      return;
+    }
+
+    if (servicesResult.error) {
+      setSaveError(servicesResult.error.message || 'Unable to load services for order creation.');
+      setIsSavingRoute(false);
+      return;
+    }
+
+    const consultationResult = await createConsultationRecord({
+      patientId: patient.patient_id,
+      transcript,
+    });
+
+    if (consultationResult.error) {
+      setSaveError(consultationResult.error.message || 'Unable to create consultation record.');
+      setIsSavingRoute(false);
+      return;
+    }
+
+    const ordersResult = await createOrdersFromConfirmedRoutes({
+      patientId: patient.patient_id,
+      consultationId: consultationResult.data?.consultation_id,
+      routes: confirmedRoutes,
+      departments: departmentsResult.data || [],
+      services: servicesResult.data || [],
+      aiRecommendation,
+    });
+
+    if (ordersResult.error) {
+      setSaveError(ordersResult.error.message || 'Unable to create orders from confirmed routes.');
+      setIsSavingRoute(false);
+      return;
+    }
+
+    const unmatchedCount = Array.isArray(ordersResult.unmatchedRoutes)
+      ? ordersResult.unmatchedRoutes.length
+      : 0;
+
+    const successMessage = unmatchedCount > 0
+      ? `Created ${ordersResult.data.length} order(s) for patient ${patient.patient_id}. ${unmatchedCount} route(s) were saved without matched service codes.`
+      : `Created ${ordersResult.data.length} order(s) for patient ${patient.patient_id}.`;
+
+    navigate('/orchestrator/department-queue', {
+      state: {
+        orderCreationSuccess: successMessage,
+        orderCreationUnmatchedRoutes: ordersResult.unmatchedRoutes || [],
+      },
+    });
   };
 
   const handleReRoute = () => {
@@ -225,15 +293,16 @@ export default function AIAnalysisPage() {
 
             {/* Action Buttons */}
             <div className="action-buttons">
+              {saveError ? <div className="route-save-error">{saveError}</div> : null}
               <button className="button re-route-btn" onClick={handleReRoute}>
                 ↻ Re-Route
               </button>
               <button
                 className="button confirm-btn"
                 onClick={handleConfirmRoute}
-                disabled={confirmedRoutes.length === 0}
+                disabled={confirmedRoutes.length === 0 || isSavingRoute}
               >
-                ✓ Confirm route and print ticket
+                {isSavingRoute ? 'Saving orders...' : '✓ Confirm route and print ticket'}
               </button>
             </div>
           </div>
