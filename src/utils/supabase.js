@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 /**
  * Fetch patients from Supabase with filtering and pagination
  * @param {Object} options - Query options
- * @param {string} options.search - Search by patient name
+ * @param {string} options.searchTerm - Search by patient name
  * @param {string} options.patientId - Filter by specific patient ID
  * @param {number} options.page - Page number (default: 1)
  * @param {number} options.pageSize - Items per page (default: 10)
@@ -16,18 +16,19 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
  */
 export const getPatients = async (options = {}) => {
     const {
-        patientId = '',
+        searchTerm = '',
         page = 1,
         pageSize = 10
     } = options
 
     try {
         // Build query
+        console.log("searchTerm", searchTerm);
         let query = supabase.from('Patient').select('*', { count: 'exact' })
 
         // Filter by ID
-        if (patientId) {
-            query = query.eq('patient_id', patientId)
+        if (searchTerm) {
+            query = query.ilike("name", `%${searchTerm}%`);
         }
 
         // Apply pagination
