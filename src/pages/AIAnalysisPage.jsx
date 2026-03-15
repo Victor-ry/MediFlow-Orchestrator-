@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AlertCircle, CheckCircle, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, LoaderCircle, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { getDepartments } from '../utils/departmentDb';
 import { getServices } from '../utils/servicesDb';
 import { createConsultationRecord, createOrdersFromConfirmedRoutes } from '../utils/routeOrdersDb';
+import { analyzeConsultationTranscript } from '../utils/flextoken';
 import '../styles/AIAnalysisPage.css';
+
+const PRIORITY_UI = {
+  High: { color: 'red', label: 'High Priority' },
+  Medium: { color: 'yellow', label: 'Medium Priority' },
+  Low: { color: 'green', label: 'Low Priority' },
+};
 
 export default function AIAnalysisPage() {
   const navigate = useNavigate();
@@ -17,24 +24,121 @@ export default function AIAnalysisPage() {
   const [deptSearch, setDeptSearch] = useState('');
   const [isSavingRoute, setIsSavingRoute] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
+  const [analysisError, setAnalysisError] = useState('');
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [analysisRetryCount, setAnalysisRetryCount] = useState(0);
 
   // Get patient data from route state
   const patient = location.state?.patient || {};
   const transcript = location.state?.transcript || '';
+  const patientId = patient?.patient_id || '';
+  const patientAge = patient?.age ?? '';
+  const patientSex = patient?.sex || '';
+  const patientMedicalHistory = patient?.medical_history || '';
+  const patientAllergies = patient?.allergies || '';
+  const patientFamilyHistory = patient?.family_history || '';
 
-  // Mock AI analysis 
-  const extractedIntents = [
-    { intent: '[Medication]', department: 'Pharmacy', color: 'green' },
-    { intent: '[ECG Request]', department: 'Cardiology', color: 'red' },
-    { intent: '[Troponin Lab]', department: 'Lab', color: 'yellow' }
-  ];
+  useEffect(() => {
+    let isMounted = true;
 
-  const predictedDiseases = [
-    { disease: 'Myocardial Infarction', confidence: 92, warning: true },
-    { disease: 'Heart Attack', confidence: 8, warning: false }
-  ];
+    const loadAnalysis = async () => {
+      setIsLoadingAnalysis(true);
+      setAnalysisError('');
 
-  const aiRecommendation = 'Urgent referral to Cardiology for further evaluation. Order ECG and troponin labs immediately. Patient requires continuous cardiac monitoring.';
+      const patientContext = {
+        patient_id: patientId,
+        age: patientAge,
+        sex: patientSex,
+        medical_history: patientMedicalHistory,
+        allergies: patientAllergies,
+        family_history: patientFamilyHistory,
+      };
+
+      if (!transcript.trim()) {
+        if (isMounted) {
+          setAnalysisResult(null);
+          setAnalysisError('No transcript was provided for AI analysis.');
+          setIsLoadingAnalysis(false);
+        }
+        return;
+      }
+
+      const departmentsResult = await getDepartments();
+
+      if (departmentsResult.error) {
+        if (isMounted) {
+          setDepartments([]);
+          setAnalysisResult(null);
+          setAnalysisError(departmentsResult.error.message || 'Unable to load departments for AI analysis.');
+          setIsLoadingAnalysis(false);
+        }
+        return;
+      }
+
+      const departmentRows = departmentsResult.data || [];
+      const departmentNames = departmentRows
+        .map((department) => String(department.departmentName || '').trim())
+        .filter(Boolean);
+
+      if (isMounted) {
+        setDepartments(departmentRows);
+      }
+
+      try {
+        const result = await analyzeConsultationTranscript({
+          transcript,
+          patient: patientContext,
+          allowedDepartments: departmentNames,
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        setAnalysisResult(result);
+        setConfirmedRoutes([]);
+      } catch (error) {
+        if (isMounted) {
+          setAnalysisResult(null);
+          setAnalysisError(error.message || 'Unable to analyze the consultation transcript.');
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingAnalysis(false);
+        }
+      }
+    };
+
+    loadAnalysis();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    analysisRetryCount,
+    patientAge,
+    patientAllergies,
+    patientFamilyHistory,
+    patientId,
+    patientMedicalHistory,
+    patientSex,
+    transcript,
+  ]);
+
+  const priorityConfig = PRIORITY_UI[analysisResult?.priority] || PRIORITY_UI.Low;
+  const extractedIntentRoute = analysisResult?.extracted_intent?.recommended_department
+    ? {
+        intent: analysisResult.extracted_intent.symptoms.length > 0
+          ? `[AI Referral] ${analysisResult.extracted_intent.symptoms.join(', ')}`
+          : '[AI Referral]',
+        department: analysisResult.extracted_intent.recommended_department,
+        color: priorityConfig.color,
+        priority: analysisResult.priority,
+      }
+    : null;
+  const predictedDiseases = analysisResult?.predicted_disease || [];
+  const aiRecommendation = analysisResult?.ai_recommendation || '';
 
   const handleConfirmRoute = async () => {
     if (!patient?.patient_id || confirmedRoutes.length === 0) {
@@ -120,7 +224,16 @@ export default function AIAnalysisPage() {
   const handleDrop = (e) => {
     e.preventDefault();
     if (draggedItem) {
-      setConfirmedRoutes([...confirmedRoutes, draggedItem]);
+      const exists = confirmedRoutes.some(
+        (item) =>
+          String(item.intent || '').toLowerCase() === String(draggedItem.intent || '').toLowerCase() &&
+          String(item.department || '').toLowerCase() === String(draggedItem.department || '').toLowerCase()
+      );
+
+      if (!exists) {
+        setConfirmedRoutes([...confirmedRoutes, draggedItem]);
+      }
+
       setDraggedItem(null);
     }
   };
@@ -131,9 +244,11 @@ export default function AIAnalysisPage() {
 
   const handleOpenCustomRoute = async () => {
     setIsCustomRouteModalOpen(true);
-    const { data } = await getDepartments();
-    if (data) {
-      setDepartments(data);
+    if (departments.length === 0) {
+      const { data } = await getDepartments();
+      if (data) {
+        setDepartments(data);
+      }
     }
   };
 
@@ -141,9 +256,20 @@ export default function AIAnalysisPage() {
     const newItem = {
       intent: '[Custom Referral]',
       department: dept.departmentName,
-      color: 'blue'
+      color: 'blue',
+      priority: 'Manual',
     };
-    setConfirmedRoutes([...confirmedRoutes, newItem]);
+
+    const exists = confirmedRoutes.some(
+      (item) =>
+        String(item.intent || '').toLowerCase() === newItem.intent.toLowerCase() &&
+        String(item.department || '').toLowerCase() === newItem.department.toLowerCase()
+    );
+
+    if (!exists) {
+      setConfirmedRoutes([...confirmedRoutes, newItem]);
+    }
+
     setIsCustomRouteModalOpen(false);
     setDeptSearch('');
   };
@@ -151,6 +277,13 @@ export default function AIAnalysisPage() {
   const getColorDot = (color) => {
     const colors = { green: '#10b981', red: '#ef4444', yellow: '#eab308', blue: '#3b82f6' };
     return colors[color] || '#94a3b8';
+  };
+
+  const handleRetryAnalysis = () => {
+    setAnalysisResult(null);
+    setAnalysisError('');
+    setIsLoadingAnalysis(true);
+    setAnalysisRetryCount((currentValue) => currentValue + 1);
   };
 
   const handleProgressClick = (page) => {
@@ -207,6 +340,18 @@ export default function AIAnalysisPage() {
               ))}
             </div>
 
+            <div className="analysis-source-card">
+              <div>
+                <h2 className="analysis-source-title">Consultation transcript</h2>
+                <p className="analysis-source-subtitle">The AI response is generated from the transcript and patient profile below.</p>
+              </div>
+              <div className="analysis-source-meta">
+                <span>Patient: {patient?.patient_id || 'Unknown'}</span>
+                <span>{patient?.name || 'Unknown Patient'}</span>
+              </div>
+              <p className="analysis-source-text">{transcript || 'No transcript available.'}</p>
+            </div>
+
             {/* AI Insights Table */}
             <table className="ai-table">
               <thead>
@@ -214,36 +359,77 @@ export default function AIAnalysisPage() {
                   <th>Extracted Intent</th>
                   <th>Predicted Disease</th>
                   <th>AI Recommendation</th>
+                  <th>Priority</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>
-                    {extractedIntents.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="draggable-intent"
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, item)}
-                      >
-                        <span
-                          className="intent-dot"
-                          style={{ backgroundColor: getColorDot(item.color) }}
-                        ></span>
-                        <span className="intent-name">{item.intent}</span>
-                        <span className="intent-arrow">→</span>
-                        <span className="intent-dept">{item.department}</span>
+                    {isLoadingAnalysis ? (
+                      <div className="analysis-state-card">
+                        <LoaderCircle size={18} className="analysis-spinner" />
+                        <span>Analyzing transcript with Qwen...</span>
                       </div>
-                    ))}
+                    ) : null}
+
+                    {!isLoadingAnalysis && analysisError ? (
+                      <div className="analysis-state-card analysis-state-error">
+                        <AlertCircle size={18} />
+                        <span>{analysisError}</span>
+                        <button className="retry-analysis-btn" onClick={handleRetryAnalysis}>
+                          Retry analysis
+                        </button>
+                      </div>
+                    ) : null}
+
+                    {!isLoadingAnalysis && !analysisError && extractedIntentRoute ? (
+                      <>
+                        <div
+                          className="draggable-intent"
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, extractedIntentRoute)}
+                        >
+                          <span
+                            className="intent-dot"
+                            style={{ backgroundColor: getColorDot(extractedIntentRoute.color) }}
+                          ></span>
+                          <span className="intent-name">Recommended department</span>
+                          <span className="intent-arrow">→</span>
+                          <span className="intent-dept">{analysisResult.extracted_intent.recommended_department}</span>
+                        </div>
+                        <div className="intent-meta-row">
+                          <span className="intent-confidence">
+                            Confidence: {analysisResult.extracted_intent.confidence_score}%
+                          </span>
+                        </div>
+                        <div className="symptom-chip-list">
+                          {analysisResult.extracted_intent.symptoms.map((symptom) => (
+                            <span key={symptom} className="symptom-chip">{symptom}</span>
+                          ))}
+                        </div>
+                      </>
+                    ) : null}
+
+                    {!isLoadingAnalysis && !analysisError && !extractedIntentRoute ? (
+                      <div className="analysis-state-card">
+                        <span>No valid department recommendation was returned.</span>
+                      </div>
+                    ) : null}
                   </td>
                   <td>
                     <div className="disease-list">
+                      {!isLoadingAnalysis && !analysisError && predictedDiseases.length === 0 ? (
+                        <div className="analysis-state-card">
+                          <span>No disease prediction available.</span>
+                        </div>
+                      ) : null}
+
                       {predictedDiseases.map((item, idx) => (
                         <div key={idx} className="disease-item">
                           <div className="disease-content">
-                            {item.warning && <AlertCircle size={18} className="warning-icon" />}
+                            <AlertCircle size={18} className="warning-icon" />
                             <span className="disease-name">{item.disease}</span>
-                            <span className="disease-confidence">({item.confidence}%)</span>
+                            <span className="disease-confidence">({item.probability_percentage}%)</span>
                           </div>
                         </div>
                       ))}
@@ -251,7 +437,23 @@ export default function AIAnalysisPage() {
                   </td>
                   <td>
                     <div className="recommendation-content">
-                      <p className="recommendation-text">{aiRecommendation}</p>
+                      <p className="recommendation-text">
+                        {isLoadingAnalysis
+                          ? 'Waiting for AI recommendation...'
+                          : aiRecommendation || 'No recommendation available.'}
+                      </p>
+                    </div>
+                  </td>
+                  <td>
+                    <div className={`priority-card priority-${priorityConfig.color}`}>
+                      <span
+                        className="intent-dot"
+                        style={{ backgroundColor: getColorDot(priorityConfig.color) }}
+                      ></span>
+                      <div>
+                        <div className="priority-label">{analysisResult?.priority || 'Low'}</div>
+                        <div className="priority-help">{priorityConfig.label}</div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -281,6 +483,9 @@ export default function AIAnalysisPage() {
                       <div className="route-info">
                         <CheckCircle size={16} className="check-icon" />
                         <span>{item.intent} → {item.department}</span>
+                        <span className={`route-priority route-priority-${item.color || 'green'}`}>
+                          {item.priority || 'Routine'}
+                        </span>
                       </div>
                       <button className="remove-route-btn" onClick={() => handleRemoveRoute(idx)}>
                         <X size={16} />
@@ -300,7 +505,7 @@ export default function AIAnalysisPage() {
               <button
                 className="button confirm-btn"
                 onClick={handleConfirmRoute}
-                disabled={confirmedRoutes.length === 0 || isSavingRoute}
+                disabled={confirmedRoutes.length === 0 || isSavingRoute || isLoadingAnalysis || !!analysisError}
               >
                 {isSavingRoute ? 'Saving orders...' : '✓ Confirm route and print ticket'}
               </button>

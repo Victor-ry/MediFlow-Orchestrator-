@@ -55,6 +55,48 @@
   gap: 2rem;
 }
 
+.analysis-source-card {
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.analysis-source-title {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.analysis-source-subtitle {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.analysis-source-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.analysis-source-text {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  color: #334155;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 /* Progress Tracker */
 .progress-tracker {
   display: flex;
@@ -160,6 +202,40 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+.intent-meta-row {
+  margin-top: 0.75rem;
+}
+
+.intent-confidence {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.symptom-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.symptom-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 .intent-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 .intent-arrow { color: #94a3b8; }
 .intent-dept { color: #475569; }
@@ -174,6 +250,81 @@
 
 .recommendation-content { background: white; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
 .recommendation-text { margin: 0; font-size: 0.875rem; color: #475569; line-height: 1.5; }
+
+.analysis-state-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.analysis-state-error {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.analysis-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.retry-analysis-btn {
+  background-color: #ffffff;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  color: #b91c1c;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.retry-analysis-btn:hover {
+  background-color: #ffe4e6;
+}
+
+.priority-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+}
+
+.priority-red {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.priority-yellow {
+  background-color: #fefce8;
+  border-color: #fde68a;
+}
+
+.priority-green {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.priority-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.priority-help {
+  font-size: 0.78rem;
+  color: #64748b;
+}
 
 /* Routing Queue */
 .routing-queue-wrapper {
@@ -254,10 +405,36 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .check-icon {
   color: #10b981;
+}
+
+.route-priority {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.route-priority-red {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.route-priority-yellow {
+  background-color: #fef3c7;
+  color: #a16207;
+}
+
+.route-priority-green,
+.route-priority-blue {
+  background-color: #dcfce7;
+  color: #166534;
 }
 
 .remove-route-btn {
@@ -280,6 +457,11 @@
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* Action Buttons */
@@ -437,4 +619,30 @@
   text-align: center;
   color: #94a3b8;
   padding: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .ai-table,
+  .ai-table thead,
+  .ai-table tbody,
+  .ai-table tr,
+  .ai-table th,
+  .ai-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-table thead {
+    display: none;
+  }
+
+  .ai-table tr {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .ai-table td {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+  }
 }
