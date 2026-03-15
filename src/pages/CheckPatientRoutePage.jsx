@@ -12,11 +12,13 @@ export default function CheckPatientRoutePage() {
     const [orders, setOrders] = useState([]);
     const [info, setInfo] = useState({});
     const [loading, setLoading] = useState(true);
+    const [pId, setPID] = useState("");
     const navigate = useNavigate();
     useEffect(() => {
         const fetchOrders = async () => {
             try {
                 const patientId = decryptId(decodeURIComponent(id));
+                setPID(patientId);
                 const { data, error } = await getOrdersByPatientId(patientId);
                 if (error) {
                     alert("Error fetching orders");
@@ -62,7 +64,7 @@ export default function CheckPatientRoutePage() {
     return (
         <div className="checkPatientRoutePage">
             {/* Basic Patient Info */}
-            <h2>Patient Info</h2>
+            <h2>Patient#{pId} Info</h2>
 
             <div className="patient-info">
                 <p>
