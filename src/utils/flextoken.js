@@ -1,6 +1,37 @@
 // src/utils/flextoken.js
-const FLEX_URL = "https://aiworkshopapi.flexinfra.com.my/v1/chat/completions";
-const FLEX_TOKEN = "Bearer sk-0rwIrkJyb1pRG8l1sDt0yA";
+const getEnvValue = (keys) => {
+  for (const key of keys) {
+    const value = process.env?.[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return "";
+};
+
+const withBearerPrefix = (token) => {
+  const normalizedToken = String(token || "").trim();
+  if (!normalizedToken) {
+    return "";
+  }
+
+  return /^Bearer\s+/i.test(normalizedToken)
+    ? normalizedToken
+    : `Bearer ${normalizedToken}`;
+};
+
+const FLEX_URL = getEnvValue([
+  "REACT_APP_API_URL",
+  "REACT_APP_FLEX_API_URL",
+]);
+
+const FLEX_TOKEN = withBearerPrefix(
+  getEnvValue([
+    "REACT_APP_API_KEY",
+    "REACT_APP_FLEX_API_KEY",
+    "REACT_APP_FLEX_TOKEN",
+  ])
+);
 const JSON_RESPONSE_FORMAT = { type: "json_object" };
 
 const PRIORITY_LEVELS = new Set(["High", "Medium", "Low"]);
@@ -788,6 +819,12 @@ export async function callFlexAI(message, options = {}) {
 }
 
 export async function callFlexAIWithMessages(messages, options = {}) {
+  if (!FLEX_URL || !FLEX_TOKEN) {
+    throw new Error(
+      "Flex API configuration is missing. Set REACT_APP_API_URL and REACT_APP_API_KEY in .env.local, then restart npm start."
+    );
+  }
+
   const body = {
     messages,
     model: "qwen2.5",

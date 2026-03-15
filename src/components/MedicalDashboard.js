@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { X, HeartPulse, Bot, ShieldCheck, CircleDollarSign } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Bar } from 'recharts';
 import './MedicalDashboard.css';
 import Side from './Sidebar';
 import { getDepartmentLoad, getDiseaseTrends, getDashboardMetrics } from '../utils/db';
 import { getHospitalInsight, getRecentConsultationsByHours } from '../utils/qwenTools';
 
 const defaultDepartmentData = [
-    { name: 'Radiology', count: '20', completed: '50', waitTime: '45 min', status: "normal" },
-    { name: 'Cardiology', count: '5', completed: '20', waitTime: '25 min', status: "normal" },
-    { name: 'Pharmacy', count: '4', completed: '40', waitTime: '10 min', status: "low" },
-    { name: 'Laboratory', count: '2', completed: '10', waitTime: '30 min', status: "normal" },
-    { name: 'Surgery', count: '1', completed: '30', waitTime: '75 min', status: "high" },
+    { name: 'Radiology', pendingCount: 20, completedCount: 50, waitMinutes: 45, status: 'normal' },
+    { name: 'Cardiology', pendingCount: 5, completedCount: 20, waitMinutes: 25, status: 'normal' },
+    { name: 'Pharmacy', pendingCount: 4, completedCount: 40, waitMinutes: 10, status: 'low' },
+    { name: 'Laboratory', pendingCount: 2, completedCount: 10, waitMinutes: 30, status: 'normal' },
+    { name: 'Surgery', pendingCount: 1, completedCount: 30, waitMinutes: 75, status: 'high' },
 ];
 
 const defaultDiseaseData = [
@@ -34,6 +34,20 @@ const MetricCard = ({ icon, title, value, unit }) => (
     </div>
 );
 
+const parseNumber = (value, fallback = 0) => {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : fallback;
+};
+
+const parseWaitMinutes = (value) => {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+        const match = value.match(/\d+(?:\.\d+)?/);
+        return match ? parseNumber(match[0], 0) : 0;
+    }
+    return 0;
+};
+
 const MedicalDashboard = () => {
     const [departmentData, setDepartmentData] = useState(defaultDepartmentData);
     const [diseaseData, setDiseaseData] = useState(defaultDiseaseData);
@@ -44,12 +58,28 @@ const MedicalDashboard = () => {
     const [feedback, setFeedback] = useState(null);
     const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
 
-    const formatWaitTime = (value) => {
-        if (typeof value === 'number') return `${value} min`;
-        return value || 'N/A';
+    const queueSummary = departmentData.reduce((accumulator, item) => {
+        accumulator.pending += parseNumber(item.pendingCount);
+        accumulator.completed += parseNumber(item.completedCount);
+        accumulator.wait += parseNumber(item.waitMinutes);
+        return accumulator;
+    }, { pending: 0, completed: 0, wait: 0 });
+
+    const averageWaitTime = departmentData.length > 0
+        ? Math.round(queueSummary.wait / departmentData.length)
+        : 0;
+
+    const queueChartData = departmentData.map((item) => ({
+        ...item,
+        waitMinutes: parseNumber(item.waitMinutes),
+    }));
+
+    const queueTooltipFormatter = (value, name) => {
+        if (name === 'Avg Wait') return [`${value} min`, name];
+        return [value, name];
     };
 
-    const loadDashboardData = async () => {
+    const loadDashboardData = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
@@ -63,8 +93,10 @@ const MedicalDashboard = () => {
                 setDepartmentData(
                     dept.data.map((d) => ({
                         name: d.name || d.department_name || 'Unknown',
-                        status: d.status || 'Low',
-                        waitTime: formatWaitTime(d.avg_wait_time || d.avgWaitTime || d.wait_time),
+                        status: String(d.status || 'normal').toLowerCase(),
+                        pendingCount: parseNumber(d.current_load ?? d.pending_count ?? d.pendingCount, 0),
+                        completedCount: parseNumber(d.completed_count ?? d.completed ?? d.completedCount, 0),
+                        waitMinutes: parseWaitMinutes(d.avg_wait_time ?? d.avgWaitTime ?? d.wait_time),
                     }))
                 );
             }
@@ -98,7 +130,7 @@ const MedicalDashboard = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     const generateAI = async () => {
         try {
@@ -118,9 +150,9 @@ const MedicalDashboard = () => {
         }
     };
 
-    // useEffect(() => {
-    //     loadDashboardData();
-    // }, []);
+    useEffect(() => {
+        loadDashboardData();
+    }, [loadDashboardData]);
 
     const fetchPatients = async () => {
         setShowAlert(true);
@@ -152,34 +184,45 @@ const MedicalDashboard = () => {
                     <div className="grid-item department-load">
                         <div className="dashboard-section-header">
                             <h3>Department Queue Load</h3>
+                            <span className="section-subtitle">Live from Department table</span>
                         </div>
-                        <table className="load-table">
-                            <thead>
-                                <tr>
-                                    <th>Department</th>
-                                    <th>Pending Count</th>
-                                    <th>Completed Count</th>
-                                    <th>Avg. Wait Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {departmentData.map((dept, index) => (
-                                    <tr key={`${dept.name}-${index}`} className={`status-${dept.status}`}>
-                                        <td>{dept.name}</td>
-                                        <td>
-                                            {/* <div className="status-bar-container">
-                                                <div className={`status-bar`}></div>
-                                            </div> */}
-                                            <span className="status-label">{dept.count}</span>
-                                        </td>
-                                        <td>
-                                            <span className="status-label">{dept.completed}</span>
-                                        </td>
-                                        <td>{dept.waitTime}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div className="queue-kpi-row">
+                            <div className="queue-kpi-card">
+                                <span className="queue-kpi-label">Total Pending</span>
+                                <span className="queue-kpi-value">{queueSummary.pending}</span>
+                            </div>
+                            <div className="queue-kpi-card">
+                                <span className="queue-kpi-label">Total Completed</span>
+                                <span className="queue-kpi-value">{queueSummary.completed}</span>
+                            </div>
+                            <div className="queue-kpi-card">
+                                <span className="queue-kpi-label">Avg Wait</span>
+                                <span className="queue-kpi-value">{averageWaitTime} min</span>
+                            </div>
+                        </div>
+
+                        <div className="queue-chart-shell">
+                            <ResponsiveContainer width="100%" height={220}>
+                                <ComposedChart data={queueChartData}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
+                                    <XAxis dataKey="name" stroke="#6b7280" />
+                                    <YAxis yAxisId="left" stroke="#6b7280" />
+                                    <YAxis yAxisId="right" orientation="right" stroke="#2563eb" />
+                                    <Tooltip formatter={queueTooltipFormatter} />
+                                    <Legend />
+                                    <Bar yAxisId="left" dataKey="pendingCount" name="Pending" fill="#f59e0b" radius={[6, 6, 0, 0]} />
+                                    <Bar yAxisId="left" dataKey="completedCount" name="Completed" fill="#10b981" radius={[6, 6, 0, 0]} />
+                                    <Line yAxisId="right" type="monotone" dataKey="waitMinutes" name="Avg Wait" stroke="#2563eb" strokeWidth={3} dot={{ r: 4 }} />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    <div className="grid-item metrics-grid">
+                        <MetricCard icon={<HeartPulse size={18} />} title="Daily Patients" value={metrics.dailyPatientCount} unit="" />
+                        <MetricCard icon={<Bot size={18} />} title="AI Accuracy" value={metrics.aiAccuracy} unit="%" />
+                        <MetricCard icon={<ShieldCheck size={18} />} title="Alert Count" value={metrics.totalAlertCount} unit="" />
+                        <MetricCard icon={<CircleDollarSign size={18} />} title="Token Usage" value={metrics.tokenUsage} unit="" />
                     </div>
 
                     <div className="grid-item ai-insights">
@@ -214,7 +257,7 @@ const MedicalDashboard = () => {
 
                     <div className="grid-item line-chart-container">
                         <h3>Disease Outbreak Monitor</h3>
-                        <ResponsiveContainer width="100%" height={250}>
+                        <ResponsiveContainer width="100%" height={190}>
                             <LineChart data={diseaseData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                                 <XAxis dataKey="name" stroke="#9ca3af" />
