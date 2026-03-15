@@ -85,3 +85,33 @@ export const getServiceByUid = async (uid) => {
         return { data: null, error };
     }
 };
+
+export const getActiveServicesGroupByDep = async () => {
+    try {
+        const { data, error } = await supabase
+            .from("Service")
+            .select(`
+        serviceName,
+        Department:departmentCode (
+          departmentName
+        )
+      `)
+            .eq("isActive", true);
+
+        if (error) throw error;
+
+        // group by department
+        const grouped = data.reduce((acc, item) => {
+            const depName = item.Department.departmentName;
+            if (!acc[depName]) {
+                acc[depName] = [];
+            }
+            acc[depName].push(item.serviceName);
+            return acc;
+        }, {});
+
+        return { data: grouped, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+};

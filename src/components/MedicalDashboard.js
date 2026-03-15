@@ -4,13 +4,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import './MedicalDashboard.css';
 import Side from './Sidebar';
 import { getDepartmentLoad, getDiseaseTrends, getDashboardMetrics } from '../utils/db';
+import { getHospitalInsight, getRecentConsultationsByHours } from '../utils/qwenTools';
 
 const defaultDepartmentData = [
-    { name: 'Radiology', status: 'High', waitTime: '45 min' },
-    { name: 'Cardiology', status: 'Medium', waitTime: '25 min' },
-    { name: 'Pharmacy', status: 'Low', waitTime: '10 min' },
-    { name: 'Laboratory', status: 'Medium', waitTime: '30 min' },
-    { name: 'Surgery', status: 'High', waitTime: '75 min' },
+    { name: 'Radiology', count: '20', completed: '50', waitTime: '45 min' },
+    { name: 'Cardiology', count: '5', completed: '20', waitTime: '25 min' },
+    { name: 'Pharmacy', count: '4', completed: '40', waitTime: '10 min' },
+    { name: 'Laboratory', count: '2', completed: '10', waitTime: '30 min' },
+    { name: 'Surgery', count: '1', completed: '30', waitTime: '75 min' },
 ];
 
 const defaultDiseaseData = [
@@ -40,12 +41,8 @@ const MedicalDashboard = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
-
-    const getStatusClass = (status) => {
-        if (status === 'High') return 'status-high';
-        if (status === 'Medium') return 'status-medium';
-        return 'status-low';
-    };
+    const [feedback, setFeedback] = useState(null);
+    const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
 
     const formatWaitTime = (value) => {
         if (typeof value === 'number') return `${value} min`;
@@ -103,9 +100,27 @@ const MedicalDashboard = () => {
         }
     };
 
-    useEffect(() => {
-        loadDashboardData();
-    }, []);
+    const generateAI = async () => {
+        try {
+            setIsFeedbackLoading(true); // start loading
+            setFeedback(null);   // clear previous feedback
+
+            const transcripts = await getRecentConsultationsByHours(5);
+            console.log(transcripts);
+
+            const aiResponse = await getHospitalInsight(transcripts);
+            console.log(aiResponse);
+            setFeedback(aiResponse);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsFeedbackLoading(false); // done loading
+        }
+    };
+
+    // useEffect(() => {
+    //     loadDashboardData();
+    // }, []);
 
     const fetchPatients = async () => {
         setShowAlert(true);
@@ -136,13 +151,14 @@ const MedicalDashboard = () => {
                 <div className="dashboard-grid">
                     <div className="grid-item department-load">
                         <div className="dashboard-section-header">
-                            <h3>Department Load & Bottleneck</h3>
+                            <h3>Department Queue Load</h3>
                         </div>
                         <table className="load-table">
                             <thead>
                                 <tr>
                                     <th>Department</th>
-                                    <th>Status</th>
+                                    <th>Pending Count</th>
+                                    <th>Completed Count</th>
                                     <th>Avg. Wait Time</th>
                                 </tr>
                             </thead>
@@ -151,10 +167,13 @@ const MedicalDashboard = () => {
                                     <tr key={`${dept.name}-${index}`}>
                                         <td>{dept.name}</td>
                                         <td>
-                                            <div className="status-bar-container">
-                                                <div className={`status-bar ${getStatusClass(dept.status)}`}></div>
-                                            </div>
-                                            <span className="status-label">{dept.status}</span>
+                                            {/* <div className="status-bar-container">
+                                                <div className={`status-bar`}></div>
+                                            </div> */}
+                                            <span className="status-label">{dept.count}</span>
+                                        </td>
+                                        <td>
+                                            <span className="status-label">{dept.completed}</span>
                                         </td>
                                         <td>{dept.waitTime}</td>
                                     </tr>
@@ -164,16 +183,32 @@ const MedicalDashboard = () => {
                     </div>
 
                     <div className="grid-item ai-insights">
-                        <h3>AI Clinical Insights - Qwen AI</h3>
+                        <h3>AI Clinical Summary - Qwen AI</h3>
                         <div className="ai-insight-box">
-                            <ul className="ai-insight-list">
-                                <li><strong>Elevated incidence</strong> of respiratory symptoms noted in Sector B patients.</li>
-                                <li><strong>Preliminary transcript analysis</strong> suggests potential cluster of influenza-like illness.</li>
-                                <li><strong>Immediate specialist review</strong> and further diagnostics recommended for affected cases.</li>
-                            </ul>
+                            {isFeedbackLoading ? (
+                                <div className="ai-feedback-skeleton">
+                                    <div className="skeleton-box" style={{ width: '80%', height: '16px', marginBottom: '8px' }}></div>
+                                    <div className="skeleton-box" style={{ width: '90%', height: '16px', marginBottom: '8px' }}></div>
+                                    <div className="skeleton-box" style={{ width: '70%', height: '16px', marginBottom: '8px' }}></div>
+                                </div>
+                            ) : feedback ? (
+                                <div
+                                    className="ai-feedback"
+                                    dangerouslySetInnerHTML={{ __html: feedback }}
+                                />
+                            ) : (
+                                <div className='ai-feedback'>
+                                    <ul>
+                                        <li>Traffic: Moderate load across departments with a mix of routine and urgent cases.</li>
+                                        <li>Critical: Urgent priority for patients with chest discomfort and palpitations requiring ECG and Troponin tests.</li>
+                                        <li>Busiest: General Practitioner and Internal Medicine.</li>
+                                    </ul>
+                                </div>
+
+                            )}
                         </div>
-                        <button className="primary-action-button">
-                            🤖 Generate AI Insights
+                        <button className="primary-action-button" onClick={() => generateAI()}>
+                            Generate Summary
                         </button>
                     </div>
 
@@ -191,13 +226,6 @@ const MedicalDashboard = () => {
                                 <Line type="monotone" dataKey="rsv" stroke="#10b981" strokeWidth={2} />
                             </LineChart>
                         </ResponsiveContainer>
-                    </div>
-
-                    <div className="grid-item metrics-grid">
-                        <MetricCard icon={<Bot size={28} />} title="AI Accuracy" value={metrics.aiAccuracy} unit="%" />
-                        <MetricCard icon={<ShieldCheck size={28} />} title="Total Alert Count" value={metrics.totalAlertCount} />
-                        <MetricCard icon={<CircleDollarSign size={28} />} title="Token Usage" value={metrics.tokenUsage} />
-                        <MetricCard icon={<HeartPulse size={28} />} title="Daily Patient Count" value={metrics.dailyPatientCount} />
                     </div>
                 </div>
             </div>
