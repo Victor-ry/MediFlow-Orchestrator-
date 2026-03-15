@@ -75,6 +75,31 @@ export async function getOrdersByPatientId(patientId) {
     return { data, error: null };
 }
 
+export async function getOrdersByPatientIdAndDepartment(patientId, option = {}) {
+    const { departmentCode, departmentName } = option;
+    const { data, error } = await getOrdersByPatientId(patientId);
+
+    if (error || !Array.isArray(data)) {
+        return { data: [], error };
+    }
+
+    const normalizedDepartmentName = (departmentName || '').trim().toLowerCase();
+
+    const filteredOrders = data.filter((order) => {
+        if (departmentCode && order.departmentCode === departmentCode) {
+            return true;
+        }
+
+        if (!normalizedDepartmentName) {
+            return true;
+        }
+
+        return order.Department?.departmentName?.trim().toLowerCase() === normalizedDepartmentName;
+    });
+
+    return { data: filteredOrders, error: null };
+}
+
 export const getPatientById = async (patient_id) => {
     try {
         const { data: patient, error } = await supabase
