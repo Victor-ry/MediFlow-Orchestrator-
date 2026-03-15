@@ -366,7 +366,14 @@ const styles = `
   border: 1px solid #e5e7eb;
   border-radius: 0.65rem;
   width: min(430px, 100%);
+  max-height: min(88vh, 860px);
+  overflow-y: auto;
   padding: 0.85rem;
+}
+
+.department-queue-page .modal-card.check-in-modal {
+  width: min(760px, 100%);
+  padding: 1rem;
 }
 
 .department-queue-page .modal-head {
@@ -408,6 +415,7 @@ const styles = `
   display: flex;
   justify-content: flex-end;
   gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .department-queue-page .modal-description {
@@ -450,10 +458,19 @@ const styles = `
   gap: 0.45rem;
 }
 
+.department-queue-page .preview-card.hero {
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+  border-color: #bfdbfe;
+}
+
 .department-queue-page .preview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
+}
+
+.department-queue-page .preview-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .department-queue-page .preview-label {
@@ -476,6 +493,179 @@ const styles = `
   padding-left: 1rem;
   color: #1f2937;
   font-size: 0.8rem;
+}
+
+.department-queue-page .service-list.tight {
+  margin-top: 0.25rem;
+}
+
+.department-queue-page .modal-shell {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.department-queue-page .modal-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.department-queue-page .modal-kicker {
+  margin: 0;
+  color: #0369a1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.department-queue-page .modal-title-block h3 {
+  margin: 0.15rem 0 0;
+}
+
+.department-queue-page .check-in-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 0.9rem;
+}
+
+.department-queue-page .check-in-column {
+  display: grid;
+  gap: 0.8rem;
+  align-content: start;
+}
+
+.department-queue-page .subsection-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.65rem;
+  background: #ffffff;
+  padding: 0.8rem;
+  display: grid;
+  gap: 0.65rem;
+  box-sizing: border-box;
+}
+
+.department-queue-page .subsection-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.department-queue-page .subsection-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.department-queue-page .subsection-meta {
+  color: #64748b;
+  font-size: 0.74rem;
+}
+
+.department-queue-page .field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.department-queue-page .subsection-card .form-row {
+  margin-top: 0;
+}
+
+.department-queue-page .subsection-card .form-row + .form-row {
+  margin-top: 0.2rem;
+}
+
+.department-queue-page .subsection-card input,
+.department-queue-page .subsection-card select {
+  box-sizing: border-box;
+  min-height: 42px;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.department-queue-page .subsection-card input:focus,
+.department-queue-page .subsection-card select:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+}
+
+.department-queue-page .order-switcher {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.department-queue-page .order-chip {
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #334155;
+  padding: 0.38rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.department-queue-page .order-chip.active {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #ffffff;
+}
+
+.department-queue-page .order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.department-queue-page .detail-block {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  padding: 0.65rem;
+}
+
+.department-queue-page .detail-block.full {
+  grid-column: 1 / -1;
+}
+
+.department-queue-page .status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.department-queue-page .status-badge.pending,
+.department-queue-page .status-badge.waiting {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.department-queue-page .status-badge.called {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.department-queue-page .status-badge.complete,
+.department-queue-page .status-badge.completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.department-queue-page .muted-copy {
+  color: #64748b;
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 .department-queue-page .queue-panel-head {
@@ -530,6 +720,13 @@ const styles = `
   .department-queue-page .queue-table {
     min-width: 560px;
   }
+
+  .department-queue-page .check-in-layout,
+  .department-queue-page .preview-grid.compact,
+  .department-queue-page .field-grid,
+  .department-queue-page .order-detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 `;
 
@@ -578,6 +775,17 @@ const buildServiceSummary = (orders) => {
   return uniqueServices.join(', ');
 };
 
+const formatOrderTimestamp = (value) => {
+  if (!value) return 'Not available';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Not available';
+
+  return date.toLocaleString();
+};
+
+const getOrderStatusClassName = (status) => (status || 'pending').toLowerCase();
+
 export default function DepartmentQueuePage() {
   const [rooms, setRooms] = useState(INITIAL_ROOMS);
   const [queue, setQueue] = useState(INITIAL_QUEUE);
@@ -591,6 +799,7 @@ export default function DepartmentQueuePage() {
   const [roomDraft, setRoomDraft] = useState({ name: '', status: 'available' });
   const [checkInDraft, setCheckInDraft] = useState({ patientId: '' });
   const [checkInCandidate, setCheckInCandidate] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState('');
   const [checkInBusy, setCheckInBusy] = useState(false);
   const [checkInError, setCheckInError] = useState('');
 
@@ -761,9 +970,19 @@ export default function DepartmentQueuePage() {
   const resetCheckInState = () => {
     setCheckInDraft({ patientId: '' });
     setCheckInCandidate(null);
+    setSelectedOrderId('');
     setCheckInError('');
     setCheckInBusy(false);
   };
+
+  const selectedOrder = useMemo(() => {
+    if (!checkInCandidate?.eligibleOrders?.length) return null;
+
+    return checkInCandidate.eligibleOrders.find((order) => String(order.order_id) === String(selectedOrderId))
+      || checkInCandidate.primaryOrder
+      || checkInCandidate.eligibleOrders[0]
+      || null;
+  }, [checkInCandidate, selectedOrderId]);
 
   const openCheckInModal = () => {
     resetCheckInState();
@@ -910,10 +1129,10 @@ export default function DepartmentQueuePage() {
       eligibleOrders,
       serviceSummary,
       priority: formatQueuePriority(primaryOrder.priority),
-      ticket: `ORD-${primaryOrder.order_id}`,
       departmentCode: selectedDepartmentRecord?.departmentCode || primaryOrder.departmentCode || '',
       departmentName: selectedDepartmentRecord?.departmentName || primaryOrder.Department?.departmentName || selectedDepartment,
     });
+    setSelectedOrderId(String(primaryOrder.order_id));
     setCheckInBusy(false);
   };
 
@@ -954,7 +1173,7 @@ export default function DepartmentQueuePage() {
     await loadQueue();
     setQueueFeedback({
       type: 'success',
-      message: `Patient ${checkInCandidate.patientId} added to the Central Waiting Pool for ${checkInCandidate.departmentName}.`,
+      message: `Patient ${checkInCandidate.patientId} added to the Central Waiting Pool for ${checkInCandidate.departmentName}${createResult.data?.ticket ? ` as ${createResult.data.ticket}` : ''}.`,
     });
     closeCheckInModal();
   };
@@ -1058,69 +1277,165 @@ export default function DepartmentQueuePage() {
 
       {showCheckInModal && (
         <div className="modal-overlay">
-          <div className="modal-card">
-            <div className="modal-head"><h3>Check-in Patient</h3><button className="icon-btn small" onClick={closeCheckInModal}><X size={16} /></button></div>
-            <p className="modal-description">Enter the patient ID. The patient will only be queued if there is an active doctor order for {selectedDepartment}.</p>
-
-            <form onSubmit={verifyPatientForCheckIn}>
-              <div className="form-row">
-                <label>Department</label>
-                <input value={selectedDepartment} readOnly />
-              </div>
-              <div className="form-row">
-                <label>Patient ID</label>
-                <input
-                  value={checkInDraft.patientId}
-                  onChange={(e) => setCheckInDraft({ patientId: e.target.value.toUpperCase() })}
-                  placeholder="Example: P10234"
-                />
+          <div className="modal-card check-in-modal">
+            <div className="modal-shell">
+              <div className="modal-topbar">
+                <div className="modal-title-block">
+                  <p className="modal-kicker">Department Queue</p>
+                  <h3>Check-in Patient</h3>
+                  <p className="modal-description">Enter the patient ID, verify the matched order, then add the patient into the waiting pool for {selectedDepartment}.</p>
+                </div>
+                <button className="icon-btn small" onClick={closeCheckInModal}><X size={16} /></button>
               </div>
 
-              {checkInError ? <div className="feedback-banner error">{checkInError}</div> : null}
+              <form onSubmit={verifyPatientForCheckIn}>
+                <div className="check-in-layout">
+                  <div className="check-in-column">
+                    <div className="subsection-card">
+                      <div className="subsection-head">
+                        <h4 className="subsection-title">Patient Lookup</h4>
+                        <span className="subsection-meta">Step 1</span>
+                      </div>
+                      <div className="form-row">
+                        <label>Department</label>
+                        <input value={selectedDepartment} readOnly />
+                      </div>
+                      <div className="form-row">
+                        <label>Patient ID</label>
+                        <input
+                          value={checkInDraft.patientId}
+                          onChange={(e) => setCheckInDraft({ patientId: e.target.value.toUpperCase() })}
+                          placeholder="Example: P10234"
+                        />
+                      </div>
+                      <div className="muted-copy">The system will check Patient, Order, Department, and Queue records before allowing the check-in.</div>
+                    </div>
 
-              {checkInCandidate ? (
-                <div className="info-stack">
-                  <div className="preview-card">
-                    <div className="preview-grid">
-                      <div>
-                        <span className="preview-label">Patient ID</span>
-                        <div className="preview-value">{checkInCandidate.patient.patient_id}</div>
+                    {checkInCandidate ? (
+                      <div className="subsection-card">
+                        <div className="subsection-head">
+                          <h4 className="subsection-title">Patient Summary</h4>
+                          <span className="subsection-meta">Ready to queue</span>
+                        </div>
+                        <div className="preview-card hero">
+                          <div className="preview-grid compact">
+                            <div>
+                              <span className="preview-label">Patient ID</span>
+                              <div className="preview-value">{checkInCandidate.patient.patient_id}</div>
+                            </div>
+                            <div>
+                              <span className="preview-label">Patient Name</span>
+                              <div className="preview-value">{checkInCandidate.patient.name}</div>
+                            </div>
+                            <div>
+                              <span className="preview-label">Department</span>
+                              <div className="preview-value">{checkInCandidate.departmentName}</div>
+                            </div>
+                            <div>
+                              <span className="preview-label">Priority</span>
+                              <div className="preview-value">{checkInCandidate.priority}</div>
+                            </div>
+                          </div>
+                          <div>
+                            <span className="preview-label">Services Ready For Queue</span>
+                            <div className="preview-value">{checkInCandidate.serviceSummary || 'No service summary available'}</div>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <span className="preview-label">Patient Name</span>
-                        <div className="preview-value">{checkInCandidate.patient.name}</div>
+                    ) : null}
+                  </div>
+
+                  <div className="check-in-column">
+                    {checkInError ? <div className="feedback-banner error">{checkInError}</div> : null}
+
+                    {checkInCandidate ? (
+                      <div className="subsection-card">
+                        <div className="subsection-head">
+                          <h4 className="subsection-title">View Order</h4>
+                          <span className="subsection-meta">Step 2</span>
+                        </div>
+
+                        <div className="order-switcher">
+                          {checkInCandidate.eligibleOrders.map((order) => (
+                            <button
+                              key={order.order_id}
+                              type="button"
+                              className={`order-chip ${String(selectedOrderId) === String(order.order_id) ? 'active' : ''}`}
+                              onClick={() => setSelectedOrderId(String(order.order_id))}
+                            >
+                              View Order #{order.order_id}
+                            </button>
+                          ))}
+                        </div>
+
+                        {selectedOrder ? (
+                          <div className="order-detail-grid">
+                            <div className="detail-block">
+                              <span className="preview-label">Order ID</span>
+                              <div className="preview-value">#{selectedOrder.order_id}</div>
+                            </div>
+                            <div className="detail-block">
+                              <span className="preview-label">Status</span>
+                              <div className={`status-badge ${getOrderStatusClassName(selectedOrder.status)}`}>{selectedOrder.status || 'pending'}</div>
+                            </div>
+                            <div className="detail-block">
+                              <span className="preview-label">Consultation ID</span>
+                              <div className="preview-value">{selectedOrder.consultation_id || 'Not linked'}</div>
+                            </div>
+                            <div className="detail-block">
+                              <span className="preview-label">Department Code</span>
+                              <div className="preview-value">{selectedOrder.departmentCode || '-'}</div>
+                            </div>
+                            <div className="detail-block full">
+                              <span className="preview-label">Service Codes</span>
+                              <div className="preview-value">{selectedOrder.serviceCodeList || 'No service codes'}</div>
+                            </div>
+                            <div className="detail-block full">
+                              <span className="preview-label">Mapped Service Names</span>
+                              {selectedOrder.serviceNameList?.length ? (
+                                <ul className="service-list tight">
+                                  {selectedOrder.serviceNameList.map((service, index) => (
+                                    <li key={`${selectedOrder.order_id}-${service.serviceName || index}`}>{service.serviceName || 'Unnamed service'}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <div className="preview-value">No mapped services found</div>
+                              )}
+                            </div>
+                            <div className="detail-block full">
+                              <span className="preview-label">Remarks</span>
+                              <div className="preview-value">{selectedOrder.remarks || 'No remarks provided'}</div>
+                            </div>
+                            <div className="detail-block">
+                              <span className="preview-label">Created At</span>
+                              <div className="preview-value">{formatOrderTimestamp(selectedOrder.created_at)}</div>
+                            </div>
+                            <div className="detail-block">
+                              <span className="preview-label">Department Location</span>
+                              <div className="preview-value">{selectedOrder.Department?.location || 'Not available'}</div>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
-                      <div>
-                        <span className="preview-label">Ticket</span>
-                        <div className="preview-value">{checkInCandidate.ticket}</div>
+                    ) : (
+                      <div className="subsection-card">
+                        <div className="subsection-head">
+                          <h4 className="subsection-title">View Order</h4>
+                          <span className="subsection-meta">Waiting for verification</span>
+                        </div>
+                        <div className="muted-copy">After verification, matched orders will appear here so you can review status, service codes, mapped services, remarks, and consultation linkage before queueing.</div>
                       </div>
-                      <div>
-                        <span className="preview-label">Priority</span>
-                        <div className="preview-value">{checkInCandidate.priority}</div>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="preview-label">Services Ready For Queue</span>
-                      <div className="preview-value">{checkInCandidate.serviceSummary || 'No service summary available'}</div>
-                    </div>
-                    <div>
-                      <span className="preview-label">Matching Order IDs</span>
-                      <ul className="service-list">
-                        {checkInCandidate.eligibleOrders.map((order) => (
-                          <li key={order.order_id}>Order #{order.order_id} ({order.status})</li>
-                        ))}
-                      </ul>
-                    </div>
+                    )}
                   </div>
                 </div>
-              ) : null}
 
-              <div className="modal-actions">
-                <button type="button" className="btn btn-soft" onClick={closeCheckInModal}>Cancel</button>
-                <button type="submit" className="btn btn-soft" disabled={checkInBusy}>{checkInBusy ? 'Verifying...' : 'Verify Patient'}</button>
-                <button type="button" className="btn btn-primary" onClick={confirmPatientCheckIn} disabled={!checkInCandidate || checkInBusy}>{checkInBusy ? 'Saving...' : 'Add To Waiting Pool'}</button>
-              </div>
-            </form>
+                <div className="modal-actions">
+                  <button type="button" className="btn btn-soft" onClick={closeCheckInModal}>Cancel</button>
+                  <button type="submit" className="btn btn-soft" disabled={checkInBusy}>{checkInBusy ? 'Verifying...' : 'Verify Patient'}</button>
+                  <button type="button" className="btn btn-primary" onClick={confirmPatientCheckIn} disabled={!checkInCandidate || checkInBusy}>{checkInBusy ? 'Saving...' : 'Add To Waiting Pool'}</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
