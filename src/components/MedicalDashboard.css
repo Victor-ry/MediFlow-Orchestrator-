@@ -356,3 +356,11 @@ body {
     margin-bottom: 0.5rem;
     line-height: 1.5;
 }
+
+.status-high {
+    background-color: #fee2e2; /* 红色系浅色 */
+}
+
+.status-low {
+    background-color: #dcfce7; /* 绿色系浅色 */
+}

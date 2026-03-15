@@ -7,11 +7,11 @@ import { getDepartmentLoad, getDiseaseTrends, getDashboardMetrics } from '../uti
 import { getHospitalInsight, getRecentConsultationsByHours } from '../utils/qwenTools';
 
 const defaultDepartmentData = [
-    { name: 'Radiology', count: '20', completed: '50', waitTime: '45 min' },
-    { name: 'Cardiology', count: '5', completed: '20', waitTime: '25 min' },
-    { name: 'Pharmacy', count: '4', completed: '40', waitTime: '10 min' },
-    { name: 'Laboratory', count: '2', completed: '10', waitTime: '30 min' },
-    { name: 'Surgery', count: '1', completed: '30', waitTime: '75 min' },
+    { name: 'Radiology', count: '20', completed: '50', waitTime: '45 min', status: "normal" },
+    { name: 'Cardiology', count: '5', completed: '20', waitTime: '25 min', status: "normal" },
+    { name: 'Pharmacy', count: '4', completed: '40', waitTime: '10 min', status: "low" },
+    { name: 'Laboratory', count: '2', completed: '10', waitTime: '30 min', status: "normal" },
+    { name: 'Surgery', count: '1', completed: '30', waitTime: '75 min', status: "high" },
 ];
 
 const defaultDiseaseData = [
@@ -164,7 +164,7 @@ const MedicalDashboard = () => {
                             </thead>
                             <tbody>
                                 {departmentData.map((dept, index) => (
-                                    <tr key={`${dept.name}-${index}`}>
+                                    <tr key={`${dept.name}-${index}`} className={`status-${dept.status}`}>
                                         <td>{dept.name}</td>
                                         <td>
                                             {/* <div className="status-bar-container">
