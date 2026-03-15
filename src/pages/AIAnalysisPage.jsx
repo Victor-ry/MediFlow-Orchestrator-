@@ -27,6 +27,9 @@ export default function AIAnalysisPage() {
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
   const [analysisError, setAnalysisError] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [analysisRawOutput, setAnalysisRawOutput] = useState('');
+  const [analysisRepairedOutput, setAnalysisRepairedOutput] = useState('');
+  const [analysisFeedback, setAnalysisFeedback] = useState('');
   const [analysisRetryCount, setAnalysisRetryCount] = useState(0);
 
   // Get patient data from route state
@@ -96,11 +99,21 @@ export default function AIAnalysisPage() {
           return;
         }
 
-        setAnalysisResult(result);
+        setAnalysisResult(result.analysis);
+        setAnalysisRawOutput(result.rawResponseContent || '');
+        setAnalysisRepairedOutput(result.repairedResponseContent || '');
+        setAnalysisFeedback(
+          result.fallbackUsed
+            ? `AI output did not fully match the required schema. Displaying simplified fallback results.${result.schemaIssues?.length ? ` ${result.schemaIssues.join(' ')}` : ''}`
+            : 'AI output matched the expected schema.'
+        );
         setConfirmedRoutes([]);
       } catch (error) {
         if (isMounted) {
           setAnalysisResult(null);
+          setAnalysisRawOutput(error.rawResponseContent || '');
+          setAnalysisRepairedOutput(error.repairedResponseContent || '');
+          setAnalysisFeedback('No usable AI recommendation was returned. Displaying empty fallback values.');
           setAnalysisError(error.message || 'Unable to analyze the consultation transcript.');
         }
       } finally {
@@ -281,6 +294,9 @@ export default function AIAnalysisPage() {
 
   const handleRetryAnalysis = () => {
     setAnalysisResult(null);
+    setAnalysisRawOutput('');
+    setAnalysisRepairedOutput('');
+    setAnalysisFeedback('');
     setAnalysisError('');
     setIsLoadingAnalysis(true);
     setAnalysisRetryCount((currentValue) => currentValue + 1);
@@ -352,6 +368,26 @@ export default function AIAnalysisPage() {
               <p className="analysis-source-text">{transcript || 'No transcript available.'}</p>
             </div>
 
+            {analysisRawOutput ? (
+              <details className="llm-output-card">
+                <summary className="llm-output-summary">Qwen raw output</summary>
+                <pre className="llm-output-text">{analysisRawOutput}</pre>
+                {analysisRepairedOutput ? (
+                  <>
+                    <div className="llm-output-divider">Schema-repaired output</div>
+                    <pre className="llm-output-text">{analysisRepairedOutput}</pre>
+                  </>
+                ) : null}
+              </details>
+            ) : null}
+
+            {analysisFeedback ? (
+              <div className="analysis-feedback-card">
+                <h3 className="analysis-feedback-title">AI feedback</h3>
+                <p className="analysis-feedback-text">{analysisFeedback}</p>
+              </div>
+            ) : null}
+
             {/* AI Insights Table */}
             <table className="ai-table">
               <thead>
@@ -382,7 +418,7 @@ export default function AIAnalysisPage() {
                       </div>
                     ) : null}
 
-                    {!isLoadingAnalysis && !analysisError && extractedIntentRoute ? (
+                    {!isLoadingAnalysis && extractedIntentRoute ? (
                       <>
                         <div
                           className="draggable-intent"
@@ -410,17 +446,17 @@ export default function AIAnalysisPage() {
                       </>
                     ) : null}
 
-                    {!isLoadingAnalysis && !analysisError && !extractedIntentRoute ? (
+                    {!isLoadingAnalysis && !extractedIntentRoute ? (
                       <div className="analysis-state-card">
-                        <span>No valid department recommendation was returned.</span>
+                        <span>No recommendation.</span>
                       </div>
                     ) : null}
                   </td>
                   <td>
                     <div className="disease-list">
-                      {!isLoadingAnalysis && !analysisError && predictedDiseases.length === 0 ? (
+                      {!isLoadingAnalysis && predictedDiseases.length === 0 ? (
                         <div className="analysis-state-card">
-                          <span>No disease prediction available.</span>
+                          <span>No recommendation.</span>
                         </div>
                       ) : null}
 
@@ -440,7 +476,7 @@ export default function AIAnalysisPage() {
                       <p className="recommendation-text">
                         {isLoadingAnalysis
                           ? 'Waiting for AI recommendation...'
-                          : aiRecommendation || 'No recommendation available.'}
+                          : aiRecommendation || 'No recommendation.'}
                       </p>
                     </div>
                   </td>
