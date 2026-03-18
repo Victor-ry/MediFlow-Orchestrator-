@@ -155,9 +155,9 @@ const styles = `
 }
 
 .department-queue-page .summary-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
   margin-bottom: 0.9rem;
 }
 
@@ -167,6 +167,8 @@ const styles = `
   border-radius: 0.65rem;
   padding: 0.75rem;
   color: #0f172a;
+  flex: 1;
+  max-width: 400px;
 }
 
 .department-queue-page .summary-card.rooms {
@@ -189,17 +191,6 @@ const styles = `
 }
 .department-queue-page .summary-card.waiting .card-value {
   color: #78350f;
-}
-
-.department-queue-page .summary-card.risk {
-  background: #fef2f2;
-  border-color: #fecaca;
-}
-.department-queue-page .summary-card.risk .card-title {
-  color: #b91c1c;
-}
-.department-queue-page .summary-card.risk .card-value {
-  color: #7f1d1d;
 }
 
 .department-queue-page .card-title {
@@ -772,7 +763,12 @@ const styles = `
   }
 
   .department-queue-page .summary-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .department-queue-page .summary-card {
+    max-width: none;
   }
 
   .department-queue-page .table-wrap {
@@ -1338,7 +1334,6 @@ export default function DepartmentQueuePage() {
         <div className="summary-row">
           <div className="summary-card rooms"><div className="card-title"><Stethoscope size={14} /> Active Rooms</div><div className="card-value">{filteredRooms.filter((r) => r.patient).length}</div></div>
           <div className="summary-card waiting"><div className="card-title"><Clock size={14} /> Waiting Pool</div><div className="card-value">{filteredQueue.length}</div></div>
-          <div className="summary-card risk"><div className="card-title"><CheckCircle size={14} /> SLA Risk</div><div className="card-value">{filteredQueue.filter((q) => q.priority === 'Routine' && q.wait > 30).length}</div></div>
         </div>
 
         <div className="dept-grid">
