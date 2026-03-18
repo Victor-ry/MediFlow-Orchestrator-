@@ -27,7 +27,10 @@ const dedupeRoutes = (routes) => {
   const seen = new Set();
 
   return routes.filter((route) => {
-    const key = `${route.intent || ''}::${route.department || ''}`.toLowerCase();
+    const explicitServiceKey = Array.isArray(route.serviceCodes)
+      ? route.serviceCodes.join(',')
+      : route.serviceCode || route.serviceCodeList || '';
+    const key = `${route.intent || ''}::${route.department || ''}::${explicitServiceKey}`.toLowerCase();
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -35,6 +38,21 @@ const dedupeRoutes = (routes) => {
 };
 
 const resolveServiceCodes = (route, services, departmentCode) => {
+  if (Array.isArray(route.serviceCodes) && route.serviceCodes.length > 0) {
+    return route.serviceCodes.filter(Boolean);
+  }
+
+  if (typeof route.serviceCodeList === 'string' && route.serviceCodeList.trim()) {
+    return route.serviceCodeList
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof route.serviceCode === 'string' && route.serviceCode.trim()) {
+    return [route.serviceCode.trim()];
+  }
+
   const departmentServices = services.filter((service) => service.departmentCode === departmentCode && service.isActive !== false);
   if (departmentServices.length === 0) return [];
 

@@ -5,7 +5,6 @@ import Sidebar from "../components/Sidebar";
 import "../styles/PatientIntakeTranscriptPage.css";
 
 export default function PatientIntakeTranscriptPage() {
-    const [transcript, setTranscript] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
     const patient = location.state?.patient || {
@@ -17,12 +16,21 @@ export default function PatientIntakeTranscriptPage() {
         medical_history: "-",
         family_history: "-",
     };
+    const consultationTranscript = location.state?.consultation?.transcript || "";
+    const [transcript, setTranscript] = useState(consultationTranscript);
+    const isTranscriptReady = transcript.trim().length > 0;
 
     const handleProcessRoute = () => {
-        console.log("Processing transcript for patient:", patient.patient_id);
-        console.log("Transcript:", transcript);
+        if (!isTranscriptReady) {
+            return;
+        }
+
         navigate("/orchestrator/ai-analysis", {
-            state: { patient, transcript },
+            state: {
+                patient,
+                transcript: transcript.trim(),
+                consultation: location.state?.consultation || null,
+            },
         });
     };
 
@@ -148,7 +156,8 @@ export default function PatientIntakeTranscriptPage() {
                             value={transcript}
                             onChange={(e) => setTranscript(e.target.value)}
                             className="transcript-textarea"
-                            spellCheck="false"
+                            spellCheck={false}
+                            placeholder="Enter the consultation transcript here. Example: Patient complains of red eye for 3 days with blurry vision. Blood pressure slightly elevated."
                         />
 
                         {/* Process & Route Button */}
@@ -156,6 +165,7 @@ export default function PatientIntakeTranscriptPage() {
                             <button
                                 onClick={handleProcessRoute}
                                 className={`transcript-btn ${transcript.trim() ? "transcript-btn-active" : ""}`}
+                                disabled={!isTranscriptReady}
                             >
                                 Process & Route
                             </button>

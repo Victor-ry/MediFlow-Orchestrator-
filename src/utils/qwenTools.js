@@ -43,8 +43,8 @@ export const getRecentConsultationsByHours = async (hours) => {
  * @returns {Promise<string>} - Returns raw HTML <ul> list.
  */
 export async function getHospitalInsight(dataRows) {
-    const API_URL = "https://aiworkshopapi.flexinfra.com.my/v1/chat/completions";
-    const API_KEY = "Bearer sk-0rwIrkJyb1pRG8l1sDt0yA";
+    const API_URL = process.env.REACT_APP_API_URL;
+    const API_KEY = process.env.REACT_APP_API_KEY;
 
     // Format data into: [Time] [Age]y with [History] -> [Dept]: [Transcript]
     // This approach physically removes names/NRICs from the payload for security.

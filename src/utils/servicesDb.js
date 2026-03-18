@@ -115,3 +115,33 @@ export const getActiveServicesGroupByDep = async () => {
         return { data: null, error };
     }
 };
+
+export const getActiveServices = async () => {
+    try {
+        const { data, error } = await supabase
+            .from("Service")
+            .select(`
+        serviceName,
+        serviceCode,
+        Department:departmentCode (
+          departmentName,
+          departmentCode
+        )
+      `)
+            .eq("isActive", true);
+
+        if (error) throw error;
+
+        // 扁平化 department 字段
+        const flattened = data.map(item => ({
+            serviceName: item.serviceName,
+            serviceCode: item.serviceCode,
+            departmentName: item.Department.departmentName,
+            departmentCode: item.Department.departmentCode
+        }));
+
+        return { data: flattened, error: null };
+    } catch (error) {
+        return { data: null, error };
+    }
+};

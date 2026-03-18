@@ -2,10 +2,23 @@ import { supabase } from './supabase';
 
 export const getDepartmentLoad = async () => {
   try {
-    const { data, error } = await supabase
+    const primaryQuery = await supabase
       .from('Department')
-      .select('department_id, name, status, avg_wait_time, current_load')
+      .select('department_id, name, status, avg_wait_time, current_load, completed_count')
       .order('name', { ascending: true });
+
+    let data = primaryQuery.data;
+    let error = primaryQuery.error;
+
+    if (error) {
+      const fallbackQuery = await supabase
+        .from('Department')
+        .select('department_id, name, status, avg_wait_time, current_load')
+        .order('name', { ascending: true });
+
+      data = fallbackQuery.data;
+      error = fallbackQuery.error;
+    }
 
     if (error) {
       console.error('getDepartmentLoad error', error);
@@ -41,7 +54,7 @@ export const getDiseaseTrends = async () => {
 
 export const getDashboardMetrics = async () => {
   try {
-    const { data: patientsData, error: patientError, count: patientCount } = await supabase
+    const { error: patientError, count: patientCount } = await supabase
       .from('Patient')
       .select('patient_id', { count: 'exact', head: true });
 

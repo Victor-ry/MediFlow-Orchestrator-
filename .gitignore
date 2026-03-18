@@ -13,10 +13,25 @@
 
 # misc
 .DS_Store
+.env
 .env.local
+.env.*
+!.env.example
 .env.development.local
 .env.test.local
 .env.production.local
+
+# database exports and backups
+/database/dumps/
+/database/backups/
+/database/exports/
+/database/*.csv
+/database/*.xlsx
+/database/*.db
+/database/*.sqlite
+/database/*.sqlite3
+/database/*.dump
+/database/*.sql.gz
 
 npm-debug.log*
 yarn-debug.log*
