@@ -226,7 +226,7 @@ const MedicalDashboard = () => {
                     </div>
 
                     <div className="grid-item ai-insights">
-                        <h3>AI Clinical Summary - Qwen AI</h3>
+                        <h3>AI Clinical Summary - Gemini AI</h3>
                         <div className="ai-insight-box">
                             {isFeedbackLoading ? (
                                 <div className="ai-feedback-skeleton">

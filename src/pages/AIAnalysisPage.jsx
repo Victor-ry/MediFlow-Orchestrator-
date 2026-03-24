@@ -432,7 +432,7 @@ export default function AIAnalysisPage() {
           <div className="ai-analysis-header">
             <div className="header-content">
               <h1 className="ai-analysis-title">AI-Analysis & Intent Extraction</h1>
-              <p className="ai-model-note">QWEN2.5-VL output 🧠</p>
+              <p className="ai-model-note">Gemini-1.5-Flash output 🧠</p>
               <div className="ai-status-row">
                 <span className={`ai-status-badge ai-status-${analysisStatusTag.toLowerCase().replace(/\s+/g, '-')}`}>
                   {analysisStatusTag}
@@ -505,7 +505,7 @@ export default function AIAnalysisPage() {
 
             {analysisRawOutput ? (
               <details className="llm-output-card">
-                <summary className="llm-output-summary">Qwen raw output</summary>
+                <summary className="llm-output-summary">Gemini raw output</summary>
                 <pre className="llm-output-text">{analysisRawOutput}</pre>
                 {analysisRepairedOutput ? (
                   <>
@@ -551,7 +551,7 @@ export default function AIAnalysisPage() {
                     {isLoadingAnalysis ? (
                       <div className="analysis-state-card">
                         <LoaderCircle size={18} className="analysis-spinner" />
-                        <span>Analyzing transcript with Qwen...</span>
+                        <span>Analyzing transcript with Gemini...</span>
                       </div>
                     ) : null}
 

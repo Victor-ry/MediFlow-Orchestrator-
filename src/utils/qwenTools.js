@@ -43,8 +43,8 @@ export const getRecentConsultationsByHours = async (hours) => {
  * @returns {Promise<string>} - Returns raw HTML <ul> list.
  */
 export async function getHospitalInsight(dataRows) {
-    const API_URL = process.env.REACT_APP_API_URL;
-    const API_KEY = process.env.REACT_APP_API_KEY;
+    const API_URL = process.env.REACT_APP_API_URL?.trim();
+    const API_KEY = process.env.REACT_APP_API_KEY?.trim();
 
     // Format data into: [Time] [Age]y with [History] -> [Dept]: [Transcript]
     // This approach physically removes names/NRICs from the payload for security.
@@ -54,8 +54,10 @@ export async function getHospitalInsight(dataRows) {
         return `[${time}] ${row.age}y with ${history} -> ${row.doctor_role}: ${row.transcript}`;
     }).join('\n');
 
+    const modelString = (process.env.REACT_APP_LLM_MODEL || "gemini-1.5-flash").trim();
+    
     const payload = {
-        model: "qwen2.5",
+        model: modelString,
         messages: [
             {
                 role: "system",

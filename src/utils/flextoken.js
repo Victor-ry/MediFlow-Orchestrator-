@@ -23,14 +23,14 @@ const withBearerPrefix = (token) => {
 const FLEX_URL = getEnvValue([
   "REACT_APP_API_URL",
   "REACT_APP_FLEX_API_URL",
-]);
+])?.trim();
 
 const FLEX_TOKEN = withBearerPrefix(
   getEnvValue([
     "REACT_APP_API_KEY",
     "REACT_APP_FLEX_API_KEY",
     "REACT_APP_FLEX_TOKEN",
-  ])
+  ])?.trim()
 );
 const JSON_RESPONSE_FORMAT = { type: "json_object" };
 
@@ -825,9 +825,11 @@ export async function callFlexAIWithMessages(messages, options = {}) {
     );
   }
 
+  const modelString = (process.env.REACT_APP_LLM_MODEL || "gemini-1.5-flash").trim();
+
   const body = {
     messages,
-    model: "qwen2.5",
+    model: modelString,
     max_tokens: 508,
     temperature: 0.1,
     top_p: 0.9,
